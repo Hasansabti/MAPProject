@@ -1,25 +1,44 @@
 package com.hzstore.mapproject.adapters;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.hzstore.mapproject.CartActivity;
+import com.hzstore.mapproject.HomeActivity;
+import com.hzstore.mapproject.LoginActivity;
 import com.hzstore.mapproject.ProductActivity;
 import com.hzstore.mapproject.R;
+import com.hzstore.mapproject.Utils;
 import com.hzstore.mapproject.fragments.CartItemFragment.OnListFragmentInteractionListener;
 
 import com.hzstore.mapproject.models.Cartitem;
+import com.hzstore.mapproject.net.ApiError;
+import com.hzstore.mapproject.net.ApiService;
+import com.hzstore.mapproject.net.RetrofitBuilder;
+import com.hzstore.mapproject.net.requests.CartitemResponse;
+import com.hzstore.mapproject.net.requests.UserResponse;
 
 
 import java.io.InputStream;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Cartitem} and makes a call to the
@@ -30,6 +49,15 @@ public class CartItemRecyclerViewAdapter extends RecyclerView.Adapter<CartItemRe
 
     private final List<Cartitem> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private ItemListener itemListener;
+
+    public void setItemListener(ItemListener listener) {
+        this.itemListener = listener;
+    }
+
+    public interface ItemListener {
+        void onCountUpdate(Cartitem cartitem);
+    }
 
     public CartItemRecyclerViewAdapter(List<Cartitem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
@@ -75,6 +103,9 @@ if(mValues.get(position).getProd() != null) {
         });
     }
 
+
+
+
     @Override
     public int getItemCount() {
         return mValues.size();
@@ -110,6 +141,7 @@ if(mValues.get(position).getProd() != null) {
         public final View mView;
         private TextView itemprice,itemname, itemsize,tv_quantity;
         ImageView cart_minus_img, cart_plus_img,img_deleteitem, item_img;
+        ProgressBar mProgressView;
         public Cartitem mItem;
 
         public ViewHolder(View view) {
@@ -126,9 +158,110 @@ if(mValues.get(position).getProd() != null) {
             itemprice=(TextView) view.findViewById(R.id.crtitem_price);
           //  itemsize=(TextView) itemView.findViewById(R.id.itemsize);
             tv_quantity=(TextView) view.findViewById(R.id.crt_count);
+            mProgressView = view.findViewById(R.id.loader_ca);
+
+
+            cart_minus_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mItem.getCount() >1) {
+
+                        updateCount(mItem.getId(),mItem.getCount()-1);
+                    }
+
+                }
+            });
+
+            cart_plus_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                        updateCount(mItem.getId(),mItem.getCount()+1);
+
+
+                }
+            });
+
 
         }
 
+
+        public void updateCount(int itemid,int value){
+showProgress(true);
+            Call<CartitemResponse> usercall;
+            ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
+            usercall = authservice.updatecount(itemid,value);
+            usercall.enqueue(new Callback<CartitemResponse>() {
+                @Override
+                public void onResponse(Call<CartitemResponse> call, Response<CartitemResponse> response) {
+
+                    Log.w("CA", "onResponse: " + response);
+
+                    if (response.isSuccessful()) {
+
+                        showProgress(false);
+mItem = response.body().getData();
+
+                        tv_quantity.setText("" + mItem.getCount());
+                        if(itemListener != null){
+                            itemListener.onCountUpdate(mItem);
+                        }
+
+
+                      //  accountManager.saveUserdata(response.body().getData());
+                        // startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                      //  finish();
+
+                     //   HomeActivity.app.performLogin();
+
+
+
+                    } else {
+                        if (response.code() == 422) {
+                          //  handleErrors(response.errorBody());
+                        }
+                        if (response.code() == 401) {
+                            ApiError apiError = Utils.converErrors(response.errorBody());
+                            Toast.makeText(HomeActivity.app.getApplicationContext(), apiError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                       // showForm();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<CartitemResponse> call, Throwable t) {
+                    Log.w("CA", "onFailure: " + t.getMessage());
+                   // showForm();
+                }
+            });
+
+        }
+        private void showProgress(final boolean show) {
+            // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+            // for very easy animations. If available, use these APIs to fade-in
+            // the progress spinner.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                int shortAnimTime = HomeActivity.app. getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+tv_quantity.setVisibility(show ? View.INVISIBLE : View.VISIBLE);
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mProgressView.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+
+            } else {
+                // The ViewPropertyAnimator APIs are not available, so simply show
+                // and hide the relevant UI components.
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+
+            }
+        }
         @Override
         public String toString() {
             return super.toString() + " '" + itemname.getText() + "'";

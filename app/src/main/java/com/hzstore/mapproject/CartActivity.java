@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hzstore.mapproject.adapters.CartItemRecyclerViewAdapter;
 import com.hzstore.mapproject.fragments.CartItemFragment;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.models.Cart;
@@ -23,7 +24,7 @@ import com.hzstore.mapproject.net.requests.CartResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class CartActivity extends AppCompatActivity {
+public class CartActivity extends AppCompatActivity implements CartItemRecyclerViewAdapter.ItemListener {
     private static final String TAG = "CartActivity";
 Cart mycart;
     @Override
@@ -59,17 +60,17 @@ Cart mycart;
 
                     //check the validity of the response
                     if (response.isSuccessful()) {
-                        Cart cart = response.body().getData();
+                        mycart = response.body().getData();
 
-mycart = cart;
 
-                        CartItemFragment pf = CartItemFragment.newInstance(cart.getCartitem());
+
+                        CartItemFragment pf = CartItemFragment.newInstance(mycart.getCartitem());
 
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
                         ft.add(R.id.cart_list, pf).commit();
                         int totalItems = 0;
-                        for(Cartitem ci : cart.getCartitem()){
+                        for(Cartitem ci : mycart.getCartitem()){
                             totalItems += ci.getCount();
                         }
 
@@ -125,4 +126,19 @@ mycart = cart;
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onCountUpdate(Cartitem cartitem) {
+        int total = 0;
+        for(Cartitem ci : mycart.getCartitem()){
+            if(cartitem.getId() == ci.getId()) {
+                total += cartitem.getCount();
+            }else{
+                total += ci.getCount();
+            }
+        }
+
+        ((TextView)findViewById(R.id.tv_total)).setText(total +" item/s");
+        Toast.makeText(getApplicationContext(),"Item count updated",Toast.LENGTH_SHORT).show();
+
+    }
 }

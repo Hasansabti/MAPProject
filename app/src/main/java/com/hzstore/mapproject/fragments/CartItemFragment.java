@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hzstore.mapproject.CartActivity;
 import com.hzstore.mapproject.adapters.CartItemRecyclerViewAdapter;
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.models.Cartitem;
@@ -73,10 +74,9 @@ public class CartItemFragment extends Fragment {
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
 
-//            ArrayList<tprod> dummy_products = new ArrayList<>();
-  //          tprod p = new tprod(1,"Apple watch","applewatch.jpg",1834,"Normal apple watch",1);
-    //       dummy_products.add(p);
-            recyclerView.setAdapter(new CartItemRecyclerViewAdapter(items, mListener));
+CartItemRecyclerViewAdapter rva = new CartItemRecyclerViewAdapter(items, mListener);
+rva.setItemListener((CartActivity)getActivity());
+            recyclerView.setAdapter(rva);
         }
         return view;
     }

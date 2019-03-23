@@ -4,6 +4,7 @@ import com.hzstore.mapproject.models.AccessToken;
 import com.hzstore.mapproject.models.User;
 import com.hzstore.mapproject.net.requests.AddtocartResponse;
 import com.hzstore.mapproject.net.requests.CartResponse;
+import com.hzstore.mapproject.net.requests.CartitemResponse;
 import com.hzstore.mapproject.net.requests.OrdersResponse;
 import com.hzstore.mapproject.net.requests.PostResponse;
 import com.hzstore.mapproject.net.requests.ProductResponse;
@@ -44,6 +45,11 @@ public interface ApiService {
     @POST("cart/addtocart")
     @FormUrlEncoded
     Call<AddtocartResponse> addtocart(@Field("id") int product_id, @Field("count") int count);
+
+    @POST("cart/updateitem")
+    @FormUrlEncoded
+    Call<CartitemResponse> updatecount(@Field("id") int product_id, @Field("count") int count);
+
 
     @POST("orders")
     Call<OrdersResponse> orders();

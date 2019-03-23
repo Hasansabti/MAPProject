@@ -35,6 +35,20 @@
                     android:gravity="center"
                     android:weightSum="5">
 
+                    <ProgressBar
+                        android:id="@+id/loader_ca"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="80dp"
+                        android:layout_marginBottom="8dp"
+                        android:visibility="invisible"
+                        card_view:layout_constraintBottom_toBottomOf="parent"
+                        card_view:layout_constraintEnd_toEndOf="parent"
+                        card_view:layout_constraintTop_toTopOf="parent"
+                        card_view:layout_constraintVertical_bias="0.6" />
+
                     <TextView
                         android:id="@+id/crtname_name"
                         android:layout_width="115dp"
@@ -72,7 +86,7 @@
 
                     <TextView
                         android:id="@+id/crt_count"
-                        android:layout_width="8dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="24dp"
@@ -90,7 +104,6 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="4dp"
                         android:layout_marginBottom="8dp"
-                        android:clickable="false"
                         card_view:layout_constraintBottom_toBottomOf="parent"
                         card_view:layout_constraintEnd_toEndOf="parent"
                         card_view:layout_constraintTop_toTopOf="parent" />
@@ -102,6 +115,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
+                        android:clickable="true"
                         card_view:layout_constraintBottom_toBottomOf="parent"
                         card_view:layout_constraintEnd_toStartOf="@+id/crt_count"
                         card_view:layout_constraintTop_toTopOf="parent"
@@ -115,6 +129,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
+                        android:clickable="true"
                         card_view:layout_constraintBottom_toBottomOf="parent"
                         card_view:layout_constraintEnd_toStartOf="@+id/chk_selectitem"
                         card_view:layout_constraintTop_toTopOf="parent"
@@ -128,10 +143,10 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        card_view:srcCompat="@drawable/ic_menu_gallery"
                         card_view:layout_constraintBottom_toBottomOf="parent"
                         card_view:layout_constraintStart_toStartOf="parent"
-                        card_view:layout_constraintTop_toTopOf="parent" />
+                        card_view:layout_constraintTop_toTopOf="parent"
+                        card_view:srcCompat="@drawable/ic_menu_gallery" />
                 </android.support.constraint.ConstraintLayout>
 
             </LinearLayout>

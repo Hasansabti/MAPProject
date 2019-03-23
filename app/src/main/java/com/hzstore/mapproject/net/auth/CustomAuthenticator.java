@@ -25,7 +25,7 @@ public class CustomAuthenticator implements Authenticator {
         this.tokenManager = tokenManager;
     }
 
-    static synchronized CustomAuthenticator getInstance(TokenManager tokenManager){
+    public static synchronized CustomAuthenticator getInstance(TokenManager tokenManager){
         if(INSTANCE == null){
             INSTANCE = new CustomAuthenticator(tokenManager);
         }
