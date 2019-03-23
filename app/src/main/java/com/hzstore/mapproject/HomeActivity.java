@@ -1,0 +1,244 @@
+package com.hzstore.mapproject;
+
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.View;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.hzstore.mapproject.fragments.ProductsFragment;
+import com.hzstore.mapproject.net.ApiError;
+import com.hzstore.mapproject.net.ApiService;
+import com.hzstore.mapproject.net.RetrofitBuilder;
+import com.hzstore.mapproject.net.requests.ProductsResponse;
+import com.hzstore.mapproject.settings.SettingsActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+
+public class HomeActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "HomeActivity";
+    public static HomeActivity app;
+    public TokenManager tokenManager;
+    public  AccountManager accountManager;
+    TextView loginbtn;
+    NavigationView navigationView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+
+        app = this;
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        tokenManager = TokenManager.getInstance(getSharedPreferences("prefs", MODE_PRIVATE));
+        accountManager = AccountManager.getInstance(getSharedPreferences("prefs", MODE_PRIVATE));
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        loginbtn = navigationView.getHeaderView(0).findViewById(R.id.accountname);
+
+
+        loginbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Login toggle button
+                if (isLoggedin()) {
+                    performLogout();
+
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivityForResult(intent, 0);
+                }
+
+            }
+        });
+
+        //get products data from the server
+        requestProducts();
+
+
+        //Start with the user logged out(for demo only)
+      //  performLogout();
+
+        if (tokenManager.getToken().getAccessToken() != null) {
+            loginbtn.setText("Welcome, "+accountManager.getUserdata().getName());
+
+
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_home3_drawer_loggedin);
+        }
+
+    }
+
+    //return to previous activity
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_cart) {
+            Intent intent = new Intent(this, CartActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_orders) {
+            Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
+            intent.putExtra("type", "Ordrs");
+            startActivity(intent);
+
+
+        } else if (id == R.id.nav_wishlist) {
+            Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
+            intent.putExtra("type", "Wish");
+            startActivity(intent);
+
+        } else if (id == R.id.nav_manage) {
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+
+
+        } else if (id == R.id.nav_share) {
+
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+    public void requestProducts() {
+
+
+//initialize products call
+        Call<ProductsResponse> product_call;
+        ApiService service = RetrofitBuilder.createService(ApiService.class);
+        product_call = service.products();
+        product_call.enqueue(new Callback<ProductsResponse>() {
+            @Override
+            public void onResponse(Call<ProductsResponse> call, retrofit2.Response<ProductsResponse> response) {
+//print response
+                Log.w(TAG, "onResponse: " + response);
+
+                //check the validity of the response
+                if (response.isSuccessful()) {
+
+                  //  showProgress(false);
+
+                    //show products list fragment once products are available
+                    ProductsFragment pf = ProductsFragment.newInstance(response.body().getData());
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+                    ft.add(R.id.main3, pf).commit();
+
+
+                } else {
+                    if (response.code() == 422) {
+                       // handleErrors(response.errorBody());
+                    }
+                    if (response.code() == 401) {
+                        ApiError apiError = Utils.converErrors(response.errorBody());
+                        Toast.makeText(HomeActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ProductsResponse> call, Throwable t) {
+                Log.w(TAG, "onFailure: " + t.getMessage());
+
+            }
+        });
+
+
+
+    }
+
+    public void performLogin() {
+        loginbtn.setText("Welcome, "+accountManager.getUserdata().getName());
+
+
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.activity_home3_drawer_loggedin);
+
+        Toast.makeText(getApplicationContext(),"Logged in successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    public void performLogout() {
+
+        loginbtn.setText("Welcome, Login here");
+
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.activity_home3_drawer_visitor);
+        tokenManager.deleteToken();
+        Log.d("Home","Logging out");
+    }
+
+    public boolean isLoggedin() {
+
+        return tokenManager.getToken().getAccessToken() != null;
+
+
+    }
+
+}
+

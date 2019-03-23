@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_orders"
+            android:icon="@drawable/orders"
+            android:title="My Orders" />
+        <item
+            android:id="@+id/nav_wishlist"
+            android:icon="@drawable/wishlist"
+            android:title="Wish List" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Settings" />
+    </group>
+
+    <item android:title="categories">
+        <menu>
+            <item
+                android:id="@+id/nav_cat_comp"
+                android:icon="@drawable/outline_laptop_black_18dp"
+                android:title="Computers" />
+            <item
+                android:id="@+id/nav_cat_phone"
+                android:icon="@drawable/outline_phone_iphone_black_18dp"
+                android:title="Smart phones" />
+            <item
+                android:id="@+id/nav_cat_cameras"
+                android:icon="@drawable/outline_camera_alt_black_18dp"
+                android:title="Cameras" />
+
+            <item
+                android:id="@+id/nav_cat_tv"
+                android:icon="@drawable/outline_tv_black_18dp"
+                android:title="TVs" />
+            <item
+                android:id="@+id/nav_cat_router"
+                android:icon="@drawable/outline_router_black_18dp"
+                android:title="Routers" />
+            <item
+                android:id="@+id/nav_cat_game"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Game consoles" />
+        </menu>
+    </item>
+
+
+    <item android:title="Support">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Contact Us" />
+        </menu>
+    </item>
+
+</menu>
