@@ -11,6 +11,8 @@ import com.hzstore.mapproject.net.requests.ProductResponse;
 import com.hzstore.mapproject.net.requests.ProductsResponse;
 import com.hzstore.mapproject.net.requests.UserResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -40,6 +42,10 @@ public interface ApiService {
 
     @GET("cart")
     Call<CartResponse> cart();
+
+    @POST("cart/deleteitem")
+    @FormUrlEncoded
+    Call<CartResponse> deleteCartItems(@Field("ids") String items);
 
 
     @POST("cart/addtocart")

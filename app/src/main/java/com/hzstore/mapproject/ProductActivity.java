@@ -103,6 +103,11 @@ public class ProductActivity extends AppCompatActivity {
             finish();
             return true;
         }
+        if (id == R.id.action_cart) {
+            Intent intent = new Intent(this, CartActivity.class);
+            startActivity(intent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

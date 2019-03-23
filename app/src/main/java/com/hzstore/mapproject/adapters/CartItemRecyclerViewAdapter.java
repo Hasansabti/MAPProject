@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hzstore.mapproject.CartActivity;
 import com.hzstore.mapproject.HomeActivity;
 import com.hzstore.mapproject.LoginActivity;
@@ -34,6 +37,7 @@ import com.hzstore.mapproject.net.requests.UserResponse;
 
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,12 +51,23 @@ import retrofit2.Response;
  */
 public class CartItemRecyclerViewAdapter extends RecyclerView.Adapter<CartItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Cartitem> mValues;
+    public final List<Cartitem> mValues;
     private final OnListFragmentInteractionListener mListener;
     private ItemListener itemListener;
+List<Integer> selected = new ArrayList<>();
 
     public void setItemListener(ItemListener listener) {
         this.itemListener = listener;
+    }
+    public void updateData(List<Cartitem> viewModels) {
+        mValues.clear();
+        mValues.addAll(viewModels);
+        notifyDataSetChanged();
+    }
+    public List<Integer> getselecteditems() {
+        Gson gs = new Gson();
+        Log.d("CA",gs.toJson(selected));
+return selected;
     }
 
     public interface ItemListener {
@@ -89,7 +104,20 @@ if(mValues.get(position).getProd() != null) {
      //   holder.cart_minus_img.setOnClickListener(new QuantityListener(context, holder.tv_quantity,call,false));
      //   holder.cart_plus_img.setOnClickListener(new QuantityListener(context, holder.tv_quantity,call,true));
       //  holder.img_deleteitem.setOnClickListener(new DeleteItemListener(context,call,this));
+       holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("CA","Adding " + holder.mItem.getId());
+                if (((CheckBox) v).isChecked()) {
 
+selected.add(holder.mItem.getId());
+                }else{
+if(selected.contains(holder.mItem.getId())){
+    selected.remove(holder.mItem.getId());
+}
+                }
+            }
+        });
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +170,7 @@ if(mValues.get(position).getProd() != null) {
         private TextView itemprice,itemname, itemsize,tv_quantity;
         ImageView cart_minus_img, cart_plus_img,img_deleteitem, item_img;
         ProgressBar mProgressView;
+        CheckBox checkBox;
         public Cartitem mItem;
 
         public ViewHolder(View view) {
@@ -159,6 +188,7 @@ if(mValues.get(position).getProd() != null) {
           //  itemsize=(TextView) itemView.findViewById(R.id.itemsize);
             tv_quantity=(TextView) view.findViewById(R.id.crt_count);
             mProgressView = view.findViewById(R.id.loader_ca);
+            checkBox = view.findViewById(R.id.chk_selectitem);
 
 
             cart_minus_img.setOnClickListener(new View.OnClickListener() {
@@ -182,6 +212,7 @@ if(mValues.get(position).getProd() != null) {
 
                 }
             });
+
 
 
         }

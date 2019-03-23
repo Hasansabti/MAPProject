@@ -27,6 +27,7 @@ import retrofit2.Callback;
 public class CartActivity extends AppCompatActivity implements CartItemRecyclerViewAdapter.ItemListener {
     private static final String TAG = "CartActivity";
 Cart mycart;
+    CartItemFragment cif;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,17 +65,18 @@ Cart mycart;
 
 
 
-                        CartItemFragment pf = CartItemFragment.newInstance(mycart.getCartitem());
+                        cif = CartItemFragment.newInstance(mycart.getCartitem());
 
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-                        ft.add(R.id.cart_list, pf).commit();
+                        ft.add(R.id.cart_list, cif).commit();
                         int totalItems = 0;
                         for(Cartitem ci : mycart.getCartitem()){
                             totalItems += ci.getCount();
                         }
 
                         ((TextView)findViewById(R.id.tv_total)).setText(totalItems +" item/s");
+                        ((TextView)findViewById(R.id.cart_total)).setText("Total "+mycart.getTotal() +" SR");
 
                     } else {
                         if (response.code() == 422) {
@@ -117,6 +119,7 @@ Cart mycart;
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_cartitem_remove) {
+            deleteSelected();
 
             return true;
         }else   if (id==android.R.id.home) {
@@ -138,7 +141,65 @@ Cart mycart;
         }
 
         ((TextView)findViewById(R.id.tv_total)).setText(total +" item/s");
+        ((TextView)findViewById(R.id.cart_total)).setText("Total "+mycart.getTotal() +" SR");
         Toast.makeText(getApplicationContext(),"Item count updated",Toast.LENGTH_SHORT).show();
 
+    }
+
+    public void deleteSelected(){
+        if(HomeActivity.app.isLoggedin()) {
+//initialize products call
+            final Call<CartResponse> cart_call;
+            ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
+Gson gson = new Gson();
+            cart_call = authservice.deleteCartItems(gson.toJson(  cif.selecteditemIds()));
+            cart_call.enqueue(new Callback<CartResponse>() {
+                @Override
+                public void onResponse(Call<CartResponse> call, retrofit2.Response<CartResponse> response) {
+//print response
+
+                    Gson gson = new Gson();
+                    Log.d("CA", gson.toJson(response.body()));
+
+                    Log.w(TAG, "onResponse: " + response);
+
+                    //check the validity of the response
+                    if (response.isSuccessful()) {
+                        mycart = response.body().getData();
+
+
+                        int totalItems = 0;
+                        for(Cartitem ci : mycart.getCartitem()){
+                            totalItems += ci.getCount();
+                        }
+                        //update recyclerview
+
+                       cif.rva.updateData(mycart.getCartitem());
+
+                        ((TextView)findViewById(R.id.tv_total)).setText(totalItems +" item/s");
+                        ((TextView)findViewById(R.id.cart_total)).setText("Total "+mycart.getTotal() +" SR");
+
+                    } else {
+                        if (response.code() == 422) {
+                            // handleErrors(response.errorBody());
+                        }
+                        if (response.code() == 401) {
+                            ApiError apiError = com.hzstore.mapproject.Utils.converErrors(response.errorBody());
+                            Toast.makeText(CartActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<CartResponse> call, Throwable t) {
+                    Log.w(TAG, "onFailure: " + t.getMessage());
+
+                }
+            });
+        }else{
+            Toast.makeText(this,"You are not logged in",Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -78,7 +78,11 @@ intent.putExtra("title",mValues.get(position).getName());
 
     @Override
     public int getItemCount() {
+        if(mValues != null)
         return mValues.size();
+        else{
+            return 0;
+        }
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

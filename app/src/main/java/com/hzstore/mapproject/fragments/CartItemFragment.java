@@ -3,18 +3,32 @@ package com.hzstore.mapproject.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hzstore.mapproject.CartActivity;
+import com.hzstore.mapproject.HomeActivity;
 import com.hzstore.mapproject.adapters.CartItemRecyclerViewAdapter;
 import com.hzstore.mapproject.R;
+import com.hzstore.mapproject.models.Cart;
 import com.hzstore.mapproject.models.Cartitem;
+import com.hzstore.mapproject.net.ApiError;
+import com.hzstore.mapproject.net.ApiService;
+import com.hzstore.mapproject.net.RetrofitBuilder;
+import com.hzstore.mapproject.net.requests.CartResponse;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * A fragment representing a list of Items.
@@ -30,8 +44,8 @@ public class CartItemFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    List<Cartitem> items;
-
+    public List<Cartitem> items;
+    public CartItemRecyclerViewAdapter rva;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -39,8 +53,6 @@ public class CartItemFragment extends Fragment {
     public CartItemFragment() {
 
     }
-
-
 
 
     // TODO: Customize parameter initialization
@@ -72,10 +84,12 @@ public class CartItemFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
-CartItemRecyclerViewAdapter rva = new CartItemRecyclerViewAdapter(items, mListener);
-rva.setItemListener((CartActivity)getActivity());
+            rva = new CartItemRecyclerViewAdapter(items, mListener);
+
+
+            rva.setItemListener((CartActivity) getActivity());
             recyclerView.setAdapter(rva);
         }
         return view;
@@ -98,6 +112,12 @@ rva.setItemListener((CartActivity)getActivity());
         mListener = null;
     }
 
+    public List<Integer> selecteditemIds() {
+
+       return rva.getselecteditems();
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -113,7 +133,7 @@ rva.setItemListener((CartActivity)getActivity());
         void onListFragmentInteraction(Cartitem item);
     }
 
-    public void btn_placeorder(View v){
+    public void btn_placeorder(View v) {
 
     }
 }
