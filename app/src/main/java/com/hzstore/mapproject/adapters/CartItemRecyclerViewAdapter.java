@@ -2,10 +2,8 @@ package com.hzstore.mapproject.adapters;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -20,10 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hzstore.mapproject.CartActivity;
 import com.hzstore.mapproject.HomeActivity;
-import com.hzstore.mapproject.LoginActivity;
-import com.hzstore.mapproject.ProductActivity;
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.Utils;
 import com.hzstore.mapproject.fragments.CartItemFragment.OnListFragmentInteractionListener;
@@ -33,7 +28,6 @@ import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
 import com.hzstore.mapproject.net.requests.CartitemResponse;
-import com.hzstore.mapproject.net.requests.UserResponse;
 
 
 import java.io.InputStream;
@@ -71,7 +65,7 @@ return selected;
     }
 
     public interface ItemListener {
-        void onCountUpdate(Cartitem cartitem);
+        void onCartitemUpdate(Cartitem cartitem);
     }
 
     public CartItemRecyclerViewAdapter(List<Cartitem> items, OnListFragmentInteractionListener listener) {
@@ -236,7 +230,7 @@ mItem = response.body().getData();
 
                         tv_quantity.setText("" + mItem.getCount());
                         if(itemListener != null){
-                            itemListener.onCountUpdate(mItem);
+                            itemListener.onCartitemUpdate(mItem);
                         }
 
 

@@ -1,6 +1,10 @@
 package com.hzstore.mapproject;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,11 +32,13 @@ public class CartActivity extends AppCompatActivity implements CartItemRecyclerV
     private static final String TAG = "CartActivity";
 Cart mycart;
     CartItemFragment cif;
+    private View mProgressView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
+        mProgressView = findViewById(R.id.loader_cart);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getItems();
     }
@@ -44,6 +50,7 @@ Cart mycart;
 
     public void getItems(){
         if(HomeActivity.app.isLoggedin()) {
+            showProgress(true);
 //initialize products call
             final Call<CartResponse> cart_call;
             ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
@@ -76,8 +83,8 @@ Cart mycart;
                         }
 
                         ((TextView)findViewById(R.id.tv_total)).setText(totalItems +" item/s");
-                        ((TextView)findViewById(R.id.cart_total)).setText("Total "+mycart.getTotal() +" SR");
-
+                        ((TextView)findViewById(R.id.cart_total)).setText(""+mycart.getTotal() +" SR");
+showProgress(false);
                     } else {
                         if (response.code() == 422) {
                             // handleErrors(response.errorBody());
@@ -129,19 +136,29 @@ Cart mycart;
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Re calculate the total items and the total price of the cart after an item is updated
+     * @param cartitem
+     */
     @Override
-    public void onCountUpdate(Cartitem cartitem) {
+    public void onCartitemUpdate(Cartitem cartitem) {
+
         int total = 0;
+        int count = 0;
         for(Cartitem ci : mycart.getCartitem()){
             if(cartitem.getId() == ci.getId()) {
-                total += cartitem.getCount();
+                total += cartitem.getCount()*cartitem.getProd().getPrice();
+                count += cartitem.getCount();
             }else{
-                total += ci.getCount();
+                total += ci.getCount()*ci.getProd().getPrice();
+                count += ci.getCount();
             }
         }
+        mycart.setTotal(""+total);
 
-        ((TextView)findViewById(R.id.tv_total)).setText(total +" item/s");
-        ((TextView)findViewById(R.id.cart_total)).setText("Total "+mycart.getTotal() +" SR");
+
+        ((TextView)findViewById(R.id.tv_total)).setText(count +" item/s");
+        ((TextView)findViewById(R.id.cart_total)).setText(""+mycart.getTotal() +" SR");
         Toast.makeText(getApplicationContext(),"Item count updated",Toast.LENGTH_SHORT).show();
 
     }
@@ -177,7 +194,7 @@ Gson gson = new Gson();
                        cif.rva.updateData(mycart.getCartitem());
 
                         ((TextView)findViewById(R.id.tv_total)).setText(totalItems +" item/s");
-                        ((TextView)findViewById(R.id.cart_total)).setText("Total "+mycart.getTotal() +" SR");
+                        ((TextView)findViewById(R.id.cart_total)).setText(""+mycart.getTotal() +" SR");
 
                     } else {
                         if (response.code() == 422) {
@@ -200,6 +217,35 @@ Gson gson = new Gson();
             });
         }else{
             Toast.makeText(this,"You are not logged in",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+            //formContainer.setVisibility(show ? View.VISIBLE : View.GONE);
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+
         }
     }
 }
