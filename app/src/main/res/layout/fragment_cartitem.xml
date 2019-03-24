@@ -10,7 +10,8 @@
     <android.support.v7.widget.CardView
         android:id="@+id/card_myevent"
         android:layout_width="match_parent"
-        android:layout_height="108dp"
+        android:layout_height="wrap_content"
+        android:minHeight="160dp"
 
         android:foreground="?attr/selectableItemBackground"
         card_view:cardElevation="5dp"
@@ -19,6 +20,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:orientation="vertical"
             android:weightSum="4">
 
@@ -26,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:minHeight="160dp"
                 android:padding="10dp">
 
                 <android.support.constraint.ConstraintLayout
@@ -37,27 +40,28 @@
 
                     <ProgressBar
                         android:id="@+id/loader_ca"
-                        android:layout_width="25dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="25dp"
                         android:layout_centerInParent="true"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="80dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
                         android:visibility="invisible"
-                        card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintEnd_toEndOf="parent"
-                        card_view:layout_constraintTop_toTopOf="parent"
-                        card_view:layout_constraintVertical_bias="0.6" />
+                        card_view:layout_constraintBottom_toBottomOf="@+id/plus_item"
+                        card_view:layout_constraintEnd_toStartOf="@+id/minus_item"
+                        card_view:layout_constraintHorizontal_bias="0.615"
+                        card_view:layout_constraintStart_toEndOf="@+id/plus_item"
+                        card_view:layout_constraintTop_toTopOf="@+id/plus_item"
+                        card_view:layout_constraintVertical_bias="0.545" />
 
                     <TextView
                         android:id="@+id/crtname_name"
-                        android:layout_width="115dp"
-                        android:layout_height="19dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
-                        android:text="Apple watch Series 4"
+                        android:text="item"
                         android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#000"
                         android:textSize="13dp"
                         card_view:layout_constraintEnd_toEndOf="parent"
                         card_view:layout_constraintHorizontal_bias="0.0"
@@ -76,77 +80,89 @@
                         android:text="1600 SR"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#000"
                         android:textSize="13dp"
                         card_view:layout_constraintBottom_toBottomOf="parent"
                         card_view:layout_constraintEnd_toEndOf="@+id/crtname_name"
                         card_view:layout_constraintHorizontal_bias="0.0"
                         card_view:layout_constraintStart_toEndOf="@+id/cartiem_img"
-                        card_view:layout_constraintTop_toBottomOf="@+id/crtname_name"
-                        card_view:layout_constraintVertical_bias="1.0" />
+                        card_view:layout_constraintTop_toBottomOf="@+id/textView2"
+                        card_view:layout_constraintVertical_bias="0.25" />
 
                     <TextView
                         android:id="@+id/crt_count"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="24dp"
                         android:text="1"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#000"
                         android:textSize="13dp"
-                        card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintEnd_toStartOf="@+id/minus_item" />
+                        card_view:layout_constraintBottom_toBottomOf="@+id/plus_item"
+                        card_view:layout_constraintStart_toEndOf="@+id/plus_item"
+                        card_view:layout_constraintTop_toTopOf="@+id/plus_item" />
 
                     <CheckBox
                         android:id="@+id/chk_selectitem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_marginBottom="8dp"
                         android:clickable="true"
+                        android:textColor="#000"
                         card_view:layout_constraintBottom_toBottomOf="parent"
                         card_view:layout_constraintEnd_toEndOf="parent"
-                        card_view:layout_constraintTop_toTopOf="parent" />
+                        card_view:layout_constraintTop_toBottomOf="@+id/crtname_name"
+                        card_view:layout_constraintVertical_bias="0.263" />
 
                     <ImageView
                         android:id="@+id/plus_item"
                         android:layout_width="39dp"
-                        android:layout_height="34dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:clickable="true"
                         card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintEnd_toStartOf="@+id/crt_count"
-                        card_view:layout_constraintTop_toTopOf="parent"
-                        card_view:layout_constraintVertical_bias="0.619"
+                        card_view:layout_constraintStart_toEndOf="@+id/textView2"
+                        card_view:layout_constraintTop_toBottomOf="@+id/crtname_name"
+                        card_view:layout_constraintVertical_bias="0.163"
                         card_view:srcCompat="@drawable/ic_plus" />
 
                     <ImageView
                         android:id="@+id/minus_item"
                         android:layout_width="36dp"
-                        android:layout_height="33dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_height="36dp"
                         android:clickable="true"
-                        card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintEnd_toStartOf="@+id/chk_selectitem"
-                        card_view:layout_constraintTop_toTopOf="parent"
-                        card_view:layout_constraintVertical_bias="0.578"
+                        card_view:layout_constraintBottom_toBottomOf="@+id/plus_item"
+                        card_view:layout_constraintStart_toEndOf="@+id/crt_count"
+                        card_view:layout_constraintTop_toTopOf="@+id/plus_item"
+                        card_view:layout_constraintVertical_bias="0.0"
                         card_view:srcCompat="@drawable/ic_minus" />
 
                     <ImageView
                         android:id="@+id/cartiem_img"
                         android:layout_width="78dp"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         card_view:layout_constraintBottom_toBottomOf="parent"
                         card_view:layout_constraintStart_toStartOf="parent"
                         card_view:layout_constraintTop_toTopOf="parent"
                         card_view:srcCompat="@drawable/ic_menu_gallery" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Qty:"
+                        android:textColor="#000"
+                        card_view:layout_constraintBottom_toBottomOf="@+id/plus_item"
+                        card_view:layout_constraintStart_toEndOf="@+id/cartiem_img"
+                        card_view:layout_constraintTop_toTopOf="@+id/plus_item"
+                        card_view:layout_constraintVertical_bias="0.352" />
                 </android.support.constraint.ConstraintLayout>
 
             </LinearLayout>

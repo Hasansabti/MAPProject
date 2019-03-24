@@ -6,12 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".CartActivity">
 
-    <RelativeLayout android:background="#e1e1e1"
-        android:layout_height="fill_parent"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        tools:context=".CartActivity"
-        xmlns:tools="http://schemas.android.com/tools">
+        android:layout_height="fill_parent"
+        android:background="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".CartActivity">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,6 +29,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
                 android:text="1 item"
+                android:textColor="#000"
                 android:textSize="20dp"
                 app:layout_constraintBottom_toTopOf="@+id/btn_placeorder"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -33,19 +37,20 @@
 
             <TextView
                 android:id="@+id/cart_total"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="308dp"
+                android:layout_height="26dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text=" Total: 1600 SR"
+                android:text="0 SR"
                 android:textAlignment="viewStart"
+                android:textColor="#000"
                 android:textSize="20dp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_total"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"></TextView>
+                app:layout_constraintStart_toEndOf="@+id/textView3"></TextView>
 
             <Button
                 android:id="@+id/btn_placeorder"
@@ -56,7 +61,7 @@
                 android:layout_marginBottom="8dp"
                 android:onClick="gotoCheckout"
                 android:text="Go to checkout "
-                android:textColor="@android:color/white"
+                android:textColor="#fff"
                 android:theme="@style/Theme.MaterialButton"
                 app:layout_constraintBottom_toBottomOf="parent"></Button>
 
@@ -72,15 +77,26 @@
                 app:layout_constraintVertical_bias="1.0">
 
             </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:text="Sub Total:"
+                android:textColor="#000"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cart_list" />
         </android.support.constraint.ConstraintLayout>
 
         <LinearLayout
-        android:id="@+id/layout_total"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:padding="5dp"
+            android:id="@+id/layout_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-        android:weightSum="2">
+            android:padding="5dp"
+            android:weightSum="2">
 
         </LinearLayout>
 
