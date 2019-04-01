@@ -82,6 +82,7 @@ return selected;
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+
         holder.mItem = mValues.get(position);
       //  holder.mIdView.setText(mValues.get(position).getName());
         //holder.mContentView.setText(mValues.get(position).getPrice());
@@ -93,6 +94,9 @@ if(mValues.get(position).getProd() != null) {
 
     // holder.itemsize.setText(call.getSize());
     holder.tv_quantity.setText(" "+mValues.get(position).getCount());
+    if(!selected.contains(holder.mItem.getId())) {
+        ((CheckBox) holder.checkBox).setChecked(false);
+    }
     new DownloadImageTask(holder.item_img).execute(mValues.get(position).getProd().getImage());
 }
      //   holder.cart_minus_img.setOnClickListener(new QuantityListener(context, holder.tv_quantity,call,false));
@@ -107,7 +111,7 @@ if(mValues.get(position).getProd() != null) {
 selected.add(holder.mItem.getId());
                 }else{
 if(selected.contains(holder.mItem.getId())){
-    selected.remove(holder.mItem.getId());
+    selected.remove(Integer.valueOf( holder.mItem.getId()));
 }
                 }
             }

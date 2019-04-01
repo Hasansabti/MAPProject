@@ -20,6 +20,7 @@ import com.hzstore.mapproject.ProductActivity;
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.fragments.ProductsFragment.OnListFragmentInteractionListener;
 
+import com.hzstore.mapproject.models.Cartitem;
 import com.hzstore.mapproject.models.Product;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
@@ -42,7 +43,10 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     private final List<Product> mValues;
     private final OnListFragmentInteractionListener mListener;
-
+    private ProductListener itemListener;
+    public void setItemListener(ProductListener listener) {
+        this.itemListener = listener;
+    }
     public ProductRecyclerViewAdapter(List<Product> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
@@ -167,7 +171,9 @@ paddtocart.setVisibility(View.INVISIBLE);
                         if (response.isSuccessful()) {
                             Toast.makeText(HomeActivity.app.getApplicationContext(), "Item has been added to your cart", Toast.LENGTH_SHORT).show();
 
-
+                            if(itemListener != null){
+                                itemListener.onCartUpdate();
+                            }
 
 
                         } else {
@@ -202,4 +208,8 @@ paddtocart.setVisibility(View.INVISIBLE);
             return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
+    public interface ProductListener {
+        void onCartUpdate();
+    }
+
 }

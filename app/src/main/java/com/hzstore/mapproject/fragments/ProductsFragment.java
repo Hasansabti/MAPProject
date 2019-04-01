@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.hzstore.mapproject.HomeActivity;
 import com.hzstore.mapproject.adapters.ProductRecyclerViewAdapter;
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.models.Product;
@@ -45,6 +46,8 @@ public class ProductsFragment extends Fragment {
 
      */
     public ProductsFragment() {
+
+
     }
 
 
@@ -74,8 +77,9 @@ public class ProductsFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
 
                 recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
-
-            recyclerView.setAdapter(new ProductRecyclerViewAdapter(products, mListener));
+ProductRecyclerViewAdapter adapter = new ProductRecyclerViewAdapter(products, mListener);
+adapter.setItemListener((HomeActivity)getActivity());
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }

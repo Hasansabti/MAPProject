@@ -77,30 +77,29 @@
                         android:layout_height="28dp"
                         android:layout_margin="@dimen/text_margin"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
+
+                        android:layout_marginTop="24dp"
                         android:text="price"
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:textColor="@color/colorPrimaryDark"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-
                         app:layout_constraintStart_toEndOf="@+id/productImage"
                         app:layout_constraintTop_toBottomOf="@+id/item_number"
-
-                        card_view:layout_constraintHorizontal_bias="0.0"
-                        card_view:layout_constraintVertical_bias="0.333" />
+                        card_view:layout_constraintHorizontal_bias="0.055"
+                        card_view:layout_constraintTop_toBottomOf="@+id/ratingBar"
+                        card_view:layout_constraintVertical_bias="1.0" />
 
                     <ImageView
                         android:id="@+id/p_addtocart"
                         android:layout_width="36dp"
                         android:layout_height="30dp"
                         android:layout_marginStart="44dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="16dp"
                         app:srcCompat="@drawable/ic_addcartblack"
                         card_view:layout_constraintEnd_toEndOf="parent"
-                        card_view:layout_constraintHorizontal_bias="0.8"
+                        card_view:layout_constraintHorizontal_bias="0.793"
                         card_view:layout_constraintStart_toEndOf="@+id/content"
                         card_view:layout_constraintTop_toBottomOf="@+id/item_number" />
 
@@ -117,6 +116,29 @@
                         card_view:layout_constraintHorizontal_bias="0.911"
                         card_view:layout_constraintStart_toEndOf="@+id/content"
                         card_view:layout_constraintTop_toBottomOf="@+id/item_number" />
+
+                    <RatingBar
+                        android:id="@+id/ratingBar"
+                        style="@style/Widget.AppCompat.RatingBar.Indicator"
+                        android:layout_width="182dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:numStars="5"
+                        android:rating="4"
+                        card_view:layout_constraintEnd_toStartOf="@+id/textView3"
+                        card_view:layout_constraintStart_toEndOf="@+id/productImage"
+                        card_view:layout_constraintTop_toBottomOf="@+id/item_number" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="(0)"
+                        card_view:layout_constraintEnd_toStartOf="@+id/loader_pcart"
+                        card_view:layout_constraintTop_toTopOf="@+id/ratingBar" />
                 </android.support.constraint.ConstraintLayout>
 
             </LinearLayout>

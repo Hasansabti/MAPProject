@@ -31,7 +31,7 @@ import retrofit2.Callback;
 public class CartActivity extends AppCompatActivity implements CartItemRecyclerViewAdapter.ItemListener {
     private static final String TAG = "CartActivity";
 Cart mycart;
-    CartItemFragment cif;
+    CartItemFragment cartif;
     private View mProgressView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +72,11 @@ Cart mycart;
 
 
 
-                        cif = CartItemFragment.newInstance(mycart.getCartitem());
+                        cartif = CartItemFragment.newInstance(mycart.getCartitem());
 
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-                        ft.add(R.id.cart_list, cif).commit();
+                        ft.add(R.id.cart_list, cartif).commit();
                         int totalItems = 0;
                         for(Cartitem ci : mycart.getCartitem()){
                             totalItems += ci.getCount();
@@ -164,57 +164,61 @@ showProgress(false);
     }
 
     public void deleteSelected(){
-        if(HomeActivity.app.isLoggedin()) {
+        if(HomeActivity.app.isLoggedin() ){
+            if(cartif.selecteditemIds().size()>0) {
 //initialize products call
-            final Call<CartResponse> cart_call;
-            ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
-Gson gson = new Gson();
-            cart_call = authservice.deleteCartItems(gson.toJson(  cif.selecteditemIds()));
-            cart_call.enqueue(new Callback<CartResponse>() {
-                @Override
-                public void onResponse(Call<CartResponse> call, retrofit2.Response<CartResponse> response) {
+                final Call<CartResponse> cart_call;
+                ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
+                Gson gson = new Gson();
+                cart_call = authservice.deleteCartItems(gson.toJson(cartif.selecteditemIds()));
+                cart_call.enqueue(new Callback<CartResponse>() {
+                    @Override
+                    public void onResponse(Call<CartResponse> call, retrofit2.Response<CartResponse> response) {
 //print response
 
-                    Gson gson = new Gson();
-                    Log.d("CA", gson.toJson(response.body()));
+                        Gson gson = new Gson();
+                        Log.d("CA", gson.toJson(response.body()));
 
-                    Log.w(TAG, "onResponse: " + response);
+                        Log.w(TAG, "onResponse: " + response);
 
-                    //check the validity of the response
-                    if (response.isSuccessful()) {
-                        mycart = response.body().getData();
+                        //check the validity of the response
+                        if (response.isSuccessful()) {
+                            mycart = response.body().getData();
 
 
-                        int totalItems = 0;
-                        for(Cartitem ci : mycart.getCartitem()){
-                            totalItems += ci.getCount();
-                        }
-                        //update recyclerview
+                            int totalItems = 0;
+                            for (Cartitem ci : mycart.getCartitem()) {
+                                totalItems += ci.getCount();
+                            }
+                            //update recyclerview
 
-                       cif.rva.updateData(mycart.getCartitem());
+                            cartif.cartadapter.updateData(mycart.getCartitem());
 
-                        ((TextView)findViewById(R.id.tv_total)).setText(totalItems +" item/s");
-                        ((TextView)findViewById(R.id.cart_total)).setText(""+mycart.getTotal() +" SR");
+                            ((TextView) findViewById(R.id.tv_total)).setText(totalItems + " item/s");
+                            ((TextView) findViewById(R.id.cart_total)).setText("" + mycart.getTotal() + " SR");
 
-                    } else {
-                        if (response.code() == 422) {
-                            // handleErrors(response.errorBody());
-                        }
-                        if (response.code() == 401) {
-                            ApiError apiError = com.hzstore.mapproject.Utils.converErrors(response.errorBody());
-                            Toast.makeText(CartActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                        } else {
+                            if (response.code() == 422) {
+                                // handleErrors(response.errorBody());
+                            }
+                            if (response.code() == 401) {
+                                ApiError apiError = com.hzstore.mapproject.Utils.converErrors(response.errorBody());
+                                Toast.makeText(CartActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+
                         }
 
                     }
 
-                }
+                    @Override
+                    public void onFailure(Call<CartResponse> call, Throwable t) {
+                        Log.w(TAG, "onFailure: " + t.getMessage());
 
-                @Override
-                public void onFailure(Call<CartResponse> call, Throwable t) {
-                    Log.w(TAG, "onFailure: " + t.getMessage());
-
-                }
-            });
+                    }
+                });
+            }else{
+                Toast.makeText(this,"No items selected",Toast.LENGTH_SHORT).show();
+            }
         }else{
             Toast.makeText(this,"You are not logged in",Toast.LENGTH_SHORT).show();
         }

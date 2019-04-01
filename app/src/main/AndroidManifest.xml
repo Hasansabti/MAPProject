@@ -41,7 +41,8 @@
             android:name=".ProductActivity"
             android:label="@string/title_activity_product"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".CartActivity" />
+        <activity android:name=".CartActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".CheckoutActivity"></activity>
     </application>
 

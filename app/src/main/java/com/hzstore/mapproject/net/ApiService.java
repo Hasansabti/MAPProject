@@ -10,6 +10,7 @@ import com.hzstore.mapproject.net.requests.PostResponse;
 import com.hzstore.mapproject.net.requests.ProductResponse;
 import com.hzstore.mapproject.net.requests.ProductsResponse;
 import com.hzstore.mapproject.net.requests.UserResponse;
+import com.hzstore.mapproject.net.requests.ValueResponse;
 
 import java.util.List;
 
@@ -59,6 +60,9 @@ public interface ApiService {
 
     @POST("orders")
     Call<OrdersResponse> orders();
+
+    @POST("cart/count")
+    Call<ValueResponse> cartcount();
 
     @GET("store")
     Call<ProductsResponse> products();

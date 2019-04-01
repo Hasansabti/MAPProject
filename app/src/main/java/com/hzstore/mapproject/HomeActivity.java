@@ -19,23 +19,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hzstore.mapproject.adapters.ProductRecyclerViewAdapter;
 import com.hzstore.mapproject.fragments.ProductsFragment;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
 import com.hzstore.mapproject.net.requests.ProductsResponse;
+import com.hzstore.mapproject.net.requests.ValueResponse;
 import com.hzstore.mapproject.settings.SettingsActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ProductRecyclerViewAdapter.ProductListener {
     private static final String TAG = "HomeActivity";
     public static HomeActivity app;
     public TokenManager tokenManager;
     public  AccountManager accountManager;
     TextView loginbtn;
+    TextView cartcounttv;
     NavigationView navigationView;
 
     @Override
@@ -83,12 +86,15 @@ public class HomeActivity extends AppCompatActivity
         //Start with the user logged out(for demo only)
       //  performLogout();
 
+        //check if user is logged in
         if (tokenManager.getToken().getAccessToken() != null) {
             loginbtn.setText("Welcome, "+accountManager.getUserdata().getName());
 
 
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_home3_drawer_loggedin);
+
+            updateCCount();
         }
 
     }
@@ -112,7 +118,15 @@ public class HomeActivity extends AppCompatActivity
         MenuItem item1 = menu.findItem(R.id.action_cart);
         MenuItemCompat.setActionView(item1, R.layout.cart_num);
         notificationCount1 = (RelativeLayout) MenuItemCompat.getActionView(item1);
-        notificationCount1.findViewById(R.id.cart_count);
+        notificationCount1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CartActivity.class);
+                startActivity(intent);
+            }
+        });
+        cartcounttv = notificationCount1.findViewById(R.id.cart_count);
+
 
         return true;
     }
@@ -221,6 +235,70 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isLoggedin())
+            updateCCount();
+    }
+
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+        if(isLoggedin())
+            updateCCount();
+
+    }
+
+    public void updateCCount(){
+
+    //refresh cart count
+
+
+    final Call<ValueResponse> cart_count;
+    ApiService service = RetrofitBuilder.createServiceWithAuth(ApiService.class,tokenManager);
+    cart_count = service.cartcount();
+    cart_count.enqueue(new Callback<ValueResponse>() {
+        @Override
+        public void onResponse(Call<ValueResponse> call, retrofit2.Response<ValueResponse> response) {
+//print response
+            Log.w(TAG, "onResponse: " + response);
+
+            //check the validity of the response
+            if (response.isSuccessful()) {
+
+                //cart count is returned
+                double count = (Double) response.body().getData();
+
+cartcounttv.setText(""+(int)count);
+            } else {
+                if (response.code() == 422) {
+                    // handleErrors(response.errorBody());
+                }
+                if (response.code() == 401) {
+                    ApiError apiError = Utils.converErrors(response.errorBody());
+                    Toast.makeText(HomeActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+        }
+
+        @Override
+        public void onFailure(Call<ValueResponse> call, Throwable t) {
+            Log.w(TAG, "onFailure: " + t.getMessage());
+
+        }
+    });
+}
     public void performLogin() {
         loginbtn.setText("Welcome, "+accountManager.getUserdata().getName());
 
@@ -248,5 +326,9 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onCartUpdate() {
+        updateCCount();
+    }
 }
 
