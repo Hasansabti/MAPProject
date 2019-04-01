@@ -5,6 +5,7 @@
         android:id="@+id/action_cart"
         android:orderInCategory="100"
         android:title="Cart"
+        android:actionLayout="@layout/cart_num"
         android:icon="@drawable/cart"
         app:showAsAction="always" />
 

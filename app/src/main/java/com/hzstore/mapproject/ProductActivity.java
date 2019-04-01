@@ -111,17 +111,22 @@ public class ProductActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Get the product details from the HZ-store api
+     *
+     * @param productID
+     */
     public void requestProduct(final int productID) {
 
 
-//initialize products call
+        //initialize products call
         final Call<ProductResponse> product_call;
 
         product_call = service.product(productID);
         product_call.enqueue(new Callback<ProductResponse>() {
             @Override
             public void onResponse(Call<ProductResponse> call, retrofit2.Response<ProductResponse> response) {
-//print response
+                //print response
                 Log.w(TAG, "onResponse: " + response);
 
                 //check the validity of the response
@@ -167,51 +172,51 @@ public class ProductActivity extends AppCompatActivity {
     //network function
     public void addtoCart(final View v) {
 
-if(HomeActivity.app.isLoggedin()) {
+        if (HomeActivity.app.isLoggedin()) {
 //initialize products call
-    final Call<AddtocartResponse> addcart_call;
-    ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
+            final Call<AddtocartResponse> addcart_call;
+            ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
 
-    addcart_call = authservice.addtocart(product.getId(), 1);
-    addcart_call.enqueue(new Callback<AddtocartResponse>() {
-        @Override
-        public void onResponse(Call<AddtocartResponse> call, retrofit2.Response<AddtocartResponse> response) {
+            addcart_call = authservice.addtocart(product.getId(), 1);
+            addcart_call.enqueue(new Callback<AddtocartResponse>() {
+                @Override
+                public void onResponse(Call<AddtocartResponse> call, retrofit2.Response<AddtocartResponse> response) {
 //print response
-            Log.w(TAG, "onResponse: " + response);
+                    Log.w(TAG, "onResponse: " + response);
 
-            //check the validity of the response
-            if (response.isSuccessful()) {
-                Toast.makeText(getApplicationContext(), "Product has been added to cart", Toast.LENGTH_SHORT).show();
+                    //check the validity of the response
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), "Product has been added to cart", Toast.LENGTH_SHORT).show();
 
 
-                Snackbar.make(v, "Item has been added to your cart", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        Snackbar.make(v, "Item has been added to your cart", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
 
-                Intent intent = new Intent(getApplicationContext(), CartActivity.class);
-                startActivity(intent);
+                        Intent intent = new Intent(getApplicationContext(), CartActivity.class);
+                        startActivity(intent);
 
-            } else {
-                if (response.code() == 422) {
-                    // handleErrors(response.errorBody());
+                    } else {
+                        if (response.code() == 422) {
+                            // handleErrors(response.errorBody());
+                        }
+                        if (response.code() == 401) {
+                            ApiError apiError = com.hzstore.mapproject.Utils.converErrors(response.errorBody());
+                            Toast.makeText(ProductActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
                 }
-                if (response.code() == 401) {
-                    ApiError apiError = com.hzstore.mapproject.Utils.converErrors(response.errorBody());
-                    Toast.makeText(ProductActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+
+                @Override
+                public void onFailure(Call<AddtocartResponse> call, Throwable t) {
+                    Log.w(TAG, "onFailure: " + t.getMessage());
+
                 }
-
-            }
-
+            });
+        } else {
+            Toast.makeText(this, "You are not logged in", Toast.LENGTH_SHORT).show();
         }
-
-        @Override
-        public void onFailure(Call<AddtocartResponse> call, Throwable t) {
-            Log.w(TAG, "onFailure: " + t.getMessage());
-
-        }
-    });
-}else{
-    Toast.makeText(this,"You are not logged in",Toast.LENGTH_SHORT).show();
-}
     }
 
     //Thread to download Image

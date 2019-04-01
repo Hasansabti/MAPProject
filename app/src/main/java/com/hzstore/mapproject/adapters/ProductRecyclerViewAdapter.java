@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,17 +12,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.hzstore.mapproject.CartActivity;
 import com.hzstore.mapproject.HomeActivity;
 import com.hzstore.mapproject.ProductActivity;
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.fragments.ProductsFragment.OnListFragmentInteractionListener;
 
 import com.hzstore.mapproject.models.Product;
+import com.hzstore.mapproject.net.ApiError;
+import com.hzstore.mapproject.net.ApiService;
+import com.hzstore.mapproject.net.RetrofitBuilder;
+import com.hzstore.mapproject.net.requests.AddtocartResponse;
 
 
 import java.io.InputStream;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Product} and makes a call to the
@@ -84,6 +94,7 @@ intent.putExtra("title",mValues.get(position).getName());
             return 0;
         }
     }
+    //network function
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
@@ -114,7 +125,8 @@ intent.putExtra("title",mValues.get(position).getName());
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public final ImageView imageView;
+        public final ImageView imageView, paddtocart;
+        public final View cProgress;
         public Product mItem;
 
         public ViewHolder(View view) {
@@ -123,7 +135,67 @@ intent.putExtra("title",mValues.get(position).getName());
             mIdView = (TextView) view.findViewById(R.id.item_number);
             mContentView = (TextView) view.findViewById(R.id.content);
             imageView = view.findViewById(R.id.productImage);
+            paddtocart = view.findViewById(R.id.p_addtocart);
+            cProgress = view.findViewById(R.id.loader_pcart);
+            paddtocart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addtoCart();
+                }
+            });
+
         }
+
+        public void addtoCart() {
+cProgress.setVisibility(View.VISIBLE);
+paddtocart.setVisibility(View.INVISIBLE);
+            if (HomeActivity.app.isLoggedin()) {
+//initialize products call
+                final Call<AddtocartResponse> addcart_call;
+                ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
+
+                addcart_call = authservice.addtocart(mItem.getId(), 1);
+                addcart_call.enqueue(new Callback<AddtocartResponse>() {
+                    @Override
+                    public void onResponse(Call<AddtocartResponse> call, retrofit2.Response<AddtocartResponse> response) {
+                        cProgress.setVisibility(View.INVISIBLE);
+                        paddtocart.setVisibility(View.VISIBLE);
+//print response
+                        Log.w("PI", "onResponse: " + response);
+
+                        //check the validity of the response
+                        if (response.isSuccessful()) {
+                            Toast.makeText(HomeActivity.app.getApplicationContext(), "Item has been added to your cart", Toast.LENGTH_SHORT).show();
+
+
+
+
+                        } else {
+                            if (response.code() == 422) {
+                                // handleErrors(response.errorBody());
+                            }
+                            if (response.code() == 401) {
+                                ApiError apiError = com.hzstore.mapproject.Utils.converErrors(response.errorBody());
+                                Toast.makeText(HomeActivity.app, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<AddtocartResponse> call, Throwable t) {
+                        cProgress.setVisibility(View.INVISIBLE);
+                        paddtocart.setVisibility(View.VISIBLE);
+                        Log.w("PI", "onFailure: " + t.getMessage());
+
+                    }
+                });
+            } else {
+                Toast.makeText(HomeActivity.app, "You are not logged in", Toast.LENGTH_SHORT).show();
+            }
+        }
+
 
         @Override
         public String toString() {

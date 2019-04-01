@@ -4,6 +4,7 @@ package com.hzstore.mapproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,7 +107,13 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        RelativeLayout notificationCount1;
         getMenuInflater().inflate(R.menu.home, menu);
+        MenuItem item1 = menu.findItem(R.id.action_cart);
+        MenuItemCompat.setActionView(item1, R.layout.cart_num);
+        notificationCount1 = (RelativeLayout) MenuItemCompat.getActionView(item1);
+        notificationCount1.findViewById(R.id.cart_count);
+
         return true;
     }
 
