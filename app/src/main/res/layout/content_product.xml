@@ -19,35 +19,62 @@
             android:layout_width="match_parent"
             android:layout_height="268dp">
 
-            <ImageView
-                android:id="@+id/productimg"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="Product image"
-                app:srcCompat="@drawable/ic_menu_gallery" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Loading..."
-                android:textColor="#000"
-                android:textSize="30sp"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                />
+                <ImageView
+                    android:id="@+id/productimg"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:contentDescription="Product image"
+                    app:srcCompat="@drawable/ic_menu_gallery" />
 
-            <Button
-                android:id="@+id/cartbtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="addtoCart"
-                android:text="Add to cart" />
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Loading..."
+                    android:textColor="#000"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toTopOf="@+id/cartbtn"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/productimg"
+                    app:layout_constraintVertical_bias="0.0"
+                    card_view:layout_constraintBottom_toBottomOf="parent" />
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Add to Wishlist" />
+                <Button
+                    android:id="@+id/cartbtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:onClick="addtoCart"
+                    android:text="Add to cart"
+                    app:layout_constraintBottom_toTopOf="@+id/button2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Add to Wishlist"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
 
         <TextView
