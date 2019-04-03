@@ -82,7 +82,7 @@ public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdap
 
 
 
-holder.rev_name.setText(""+holder.mItem.getUser());
+holder.rev_name.setText("User "+holder.mItem.getUser());
 holder.rev_text.setText(holder.mItem.getReview());
 holder.rev_rb.setRating(holder.mItem.getRate());
     }

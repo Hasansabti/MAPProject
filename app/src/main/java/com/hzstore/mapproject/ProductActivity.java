@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
 import com.hzstore.mapproject.net.requests.AddtocartResponse;
 import com.hzstore.mapproject.net.requests.ProductResponse;
+import com.hzstore.mapproject.net.requests.ValueResponse;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
@@ -41,6 +44,7 @@ public class ProductActivity extends AppCompatActivity {
     private static final String TAG = "ProductActivity";
     Product product = null;
     ApiService service;
+    TextView cartcounttv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +93,19 @@ public class ProductActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        RelativeLayout notificationCount1;
         getMenuInflater().inflate(R.menu.home, menu);
+        MenuItem item1 = menu.findItem(R.id.action_cart);
+        MenuItemCompat.setActionView(item1, R.layout.cart_num);
+        notificationCount1 = (RelativeLayout) MenuItemCompat.getActionView(item1);
+        notificationCount1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CartActivity.class);
+                startActivity(intent);
+            }
+        });
+        cartcounttv = notificationCount1.findViewById(R.id.cart_count);
         return true;
     }
 
@@ -183,7 +199,47 @@ public class ProductActivity extends AppCompatActivity {
 
     }
 
+    public void updateCCount(){
 
+        //refresh cart count
+
+
+        final Call<ValueResponse> cart_count;
+        ApiService service = RetrofitBuilder.createServiceWithAuth(ApiService.class,HomeActivity.app.tokenManager);
+        cart_count = service.cartcount();
+        cart_count.enqueue(new Callback<ValueResponse>() {
+            @Override
+            public void onResponse(Call<ValueResponse> call, retrofit2.Response<ValueResponse> response) {
+//print response
+                Log.w(TAG, "onResponse: " + response);
+
+                //check the validity of the response
+                if (response.isSuccessful()) {
+
+                    //cart count is returned
+                    double count = (Double) response.body().getData();
+
+                    cartcounttv.setText(""+(int)count);
+                } else {
+                    if (response.code() == 422) {
+                        // handleErrors(response.errorBody());
+                    }
+                    if (response.code() == 401) {
+                        ApiError apiError = Utils.converErrors(response.errorBody());
+                        Toast.makeText(ProductActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ValueResponse> call, Throwable t) {
+                Log.w(TAG, "onFailure: " + t.getMessage());
+
+            }
+        });
+    }
     //network function
     public void addtoCart(final View v) {
 
