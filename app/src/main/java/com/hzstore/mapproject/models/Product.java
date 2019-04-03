@@ -1,11 +1,18 @@
 package com.hzstore.mapproject.models;
 
+import com.squareup.moshi.Json;
+
+import java.util.List;
+
 public class Product {
     int id;
     double price = 0;
     String desc;
     String name;
     String image;
+    @Json(name = "revavg")
+    float avg_reviews;
+    List<Review> reviews;
 
     public int getId() {
         return id;
@@ -19,31 +26,28 @@ public class Product {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
 
     public String getDesc() {
         return desc;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
 
     public String getImage() {
         return image;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+
+    public float getAvg_reviews() {
+        return avg_reviews;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
     }
 }

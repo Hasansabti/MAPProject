@@ -9,6 +9,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -16,16 +18,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hzstore.mapproject.adapters.ProductReviewAdapter;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.models.Product;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
 import com.hzstore.mapproject.net.requests.AddtocartResponse;
 import com.hzstore.mapproject.net.requests.ProductResponse;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 
@@ -66,6 +71,9 @@ public class ProductActivity extends AppCompatActivity {
         requestProduct(Integer.parseInt(getIntent().getExtras().getString("productID")));
         setTitle(getIntent().getExtras().getString("title"));
         setupActionBar();
+
+
+
 
         Button cartbtn = findViewById(R.id.cartbtn);
         /*
@@ -138,13 +146,20 @@ public class ProductActivity extends AppCompatActivity {
                     product = response.body().getData();
                     ImageView img = findViewById(R.id.productimg);
                     TextView price = findViewById(R.id.price);
+                    RatingBar rate = findViewById(R.id.product_rating);
+                    rate.setRating(product.getAvg_reviews());
 
                     price.setText("" + product.getPrice() + " SR");
+                    ProductReviewAdapter adapter = new ProductReviewAdapter(product.getReviews());
+                    RecyclerView reviews = findViewById(R.id.reviews);
+                    reviews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
-
+                    reviews.setAdapter(adapter);
                     //   Log.d("HZStore", "Name is: " + response.toString());
 
-                    new DownloadImageTask(img).execute(product.getImage());
+
+                    Picasso.get().load("http://sabti-h.tech/hz-store/storage/img/" + product.getImage()).into(img);
+
                 } else {
                     if (response.code() == 422) {
                         // handleErrors(response.errorBody());
@@ -219,32 +234,7 @@ public class ProductActivity extends AppCompatActivity {
         }
     }
 
-    //Thread to download Image
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView pImage;
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.pImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL("http://sabti-h.tech/hz-store/storage/img/" + urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-
-            pImage.setImageBitmap(Bitmap.createScaledBitmap(result, 1200, 1200, false));
-        }
-    }
 
 
 }

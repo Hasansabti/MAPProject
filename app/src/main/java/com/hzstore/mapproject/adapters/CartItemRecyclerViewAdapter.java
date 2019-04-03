@@ -28,6 +28,7 @@ import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
 import com.hzstore.mapproject.net.requests.CartitemResponse;
+import com.squareup.picasso.Picasso;
 
 
 import java.io.InputStream;
@@ -97,11 +98,11 @@ if(mValues.get(position).getProd() != null) {
     if(!selected.contains(holder.mItem.getId())) {
         ((CheckBox) holder.checkBox).setChecked(false);
     }
-    new DownloadImageTask(holder.item_img).execute(mValues.get(position).getProd().getImage());
+//Download image into Imageview
+    Picasso.get().load("http://sabti-h.tech/hz-store/storage/img/" + mValues.get(position).getProd().getImage()).into(holder.item_img);
+
 }
-     //   holder.cart_minus_img.setOnClickListener(new QuantityListener(context, holder.tv_quantity,call,false));
-     //   holder.cart_plus_img.setOnClickListener(new QuantityListener(context, holder.tv_quantity,call,true));
-      //  holder.img_deleteitem.setOnClickListener(new DeleteItemListener(context,call,this));
+
        holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,32 +136,6 @@ if(selected.contains(holder.mItem.getId())){
     @Override
     public int getItemCount() {
         return mValues.size();
-    }
-    //Thread to download Image
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView pImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.pImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL("http://sabti-h.tech/hz-store/storage/img/" + urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-
-            pImage.setImageBitmap(Bitmap.createScaledBitmap(result, 1200, 1200, false));
-        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

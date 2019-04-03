@@ -157,17 +157,20 @@ public class HomeActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_orders) {
+            //show User's orders
             Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
             intent.putExtra("type", "Ordrs");
             startActivity(intent);
 
 
         } else if (id == R.id.nav_wishlist) {
+            //show User's wishlist
             Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
             intent.putExtra("type", "Wish");
             startActivity(intent);
 
         } else if (id == R.id.nav_manage) {
+            //open settings
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
 
@@ -188,7 +191,7 @@ public class HomeActivity extends AppCompatActivity
     public void requestProducts() {
 
 
-//initialize products call
+//initialize products HZ-api call
         Call<ProductsResponse> product_call;
         ApiService service = RetrofitBuilder.createService(ApiService.class);
         product_call = service.products();
@@ -203,7 +206,7 @@ public class HomeActivity extends AppCompatActivity
 
                   //  showProgress(false);
 
-                    //show products list fragment once products are available
+                    //show products list fragment once products are available and pass the products
                     ProductsFragment pf = ProductsFragment.newInstance(response.body().getData());
 
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
