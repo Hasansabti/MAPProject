@@ -16,7 +16,7 @@ import com.hzstore.mapproject.HomeActivity;
 import com.hzstore.mapproject.adapters.ProductRecyclerViewAdapter;
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.models.Product;
-import com.hzstore.mapproject.models.tprod;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
