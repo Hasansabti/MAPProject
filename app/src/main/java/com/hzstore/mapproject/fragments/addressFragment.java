@@ -3,16 +3,17 @@ package com.hzstore.mapproject.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hzstore.mapproject.CartActivity;
-import com.hzstore.mapproject.adapters.CartItemRecyclerViewAdapter;
 import com.hzstore.mapproject.R;
-import com.hzstore.mapproject.models.Cartitem;
+import com.hzstore.mapproject.adapters.MyaddressAdapter;
+
+import com.hzstore.mapproject.models.Address;
 
 import java.util.List;
 
@@ -22,31 +23,27 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class CartItemFragment extends Fragment {
-    private static final String TAG = "CartFragment";
+public class addressFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    public List<Cartitem> items;
-    public CartItemRecyclerViewAdapter cartadapter;
+    List<Address> addresses;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public CartItemFragment() {
-
+    public addressFragment() {
     }
-
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static CartItemFragment newInstance(List<Cartitem> items) {
-        CartItemFragment fragment = new CartItemFragment();
-        fragment.items = items;
-
+    public static addressFragment newInstance(List<Address> addressList) {
+        addressFragment fragment = new addressFragment();
+        fragment.addresses = addressList;
         return fragment;
     }
 
@@ -57,26 +54,23 @@ public class CartItemFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        mColumnCount = 1;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cartitem_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_address_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-
-            cartadapter = new CartItemRecyclerViewAdapter(items);
-
-
-            cartadapter.setItemListener((CartActivity) getActivity());
-            recyclerView.setAdapter(cartadapter);
+            if (mColumnCount <= 1) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            } else {
+                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            }
+            recyclerView.setAdapter(new MyaddressAdapter(addresses, mListener));
         }
         return view;
     }
@@ -88,7 +82,8 @@ public class CartItemFragment extends Fragment {
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
-
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
         }
     }
 
@@ -96,12 +91,6 @@ public class CartItemFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public List<Integer> selecteditemIds() {
-
-       return cartadapter.getselecteditems();
-
     }
 
     /**
@@ -116,10 +105,6 @@ public class CartItemFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Cartitem item);
-    }
-
-    public void btn_placeorder(View v) {
-
+        void onListFragmentInteraction(Address item);
     }
 }

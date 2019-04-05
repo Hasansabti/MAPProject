@@ -23,7 +23,6 @@ import com.hzstore.mapproject.models.Cart;
 import com.hzstore.mapproject.models.Cartitem;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
-import com.hzstore.mapproject.net.requests.CartResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,13 +51,13 @@ Cart mycart;
         if(HomeActivity.app.isLoggedin()) {
             showProgress(true);
 //initialize products call
-            final Call<CartResponse> cart_call;
+            final Call<Cart> cart_call;
             ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
 
             cart_call = authservice.cart();
-            cart_call.enqueue(new Callback<CartResponse>() {
+            cart_call.enqueue(new Callback<Cart>() {
                 @Override
-                public void onResponse(Call<CartResponse> call, retrofit2.Response<CartResponse> response) {
+                public void onResponse(Call<Cart> call, retrofit2.Response<Cart> response) {
 //print response
 
                     Gson gson = new Gson();
@@ -68,7 +67,7 @@ Cart mycart;
 
                     //check the validity of the response
                     if (response.isSuccessful()) {
-                        mycart = response.body().getData();
+                        mycart = response.body();
 
 
 
@@ -99,7 +98,7 @@ showProgress(false);
                 }
 
                 @Override
-                public void onFailure(Call<CartResponse> call, Throwable t) {
+                public void onFailure(Call<Cart> call, Throwable t) {
                     Log.w(TAG, "onFailure: " + t.getMessage());
 
                 }
@@ -167,13 +166,13 @@ showProgress(false);
         if(HomeActivity.app.isLoggedin() ){
             if(cartif.selecteditemIds().size()>0) {
 //initialize products call
-                final Call<CartResponse> cart_call;
+                final Call<Cart> cart_call;
                 ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
                 Gson gson = new Gson();
                 cart_call = authservice.deleteCartItems(gson.toJson(cartif.selecteditemIds()));
-                cart_call.enqueue(new Callback<CartResponse>() {
+                cart_call.enqueue(new Callback<Cart>() {
                     @Override
-                    public void onResponse(Call<CartResponse> call, retrofit2.Response<CartResponse> response) {
+                    public void onResponse(Call<Cart> call, retrofit2.Response<Cart> response) {
 //print response
 
                         Gson gson = new Gson();
@@ -183,7 +182,7 @@ showProgress(false);
 
                         //check the validity of the response
                         if (response.isSuccessful()) {
-                            mycart = response.body().getData();
+                            mycart = response.body();
 
 
                             int totalItems = 0;
@@ -211,7 +210,7 @@ showProgress(false);
                     }
 
                     @Override
-                    public void onFailure(Call<CartResponse> call, Throwable t) {
+                    public void onFailure(Call<Cart> call, Throwable t) {
                         Log.w(TAG, "onFailure: " + t.getMessage());
 
                     }

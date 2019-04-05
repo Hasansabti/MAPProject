@@ -82,12 +82,12 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
 
-
+            app:backgroundTint="@color/design_default_color_primary_dark"
             android:fontFamily="sans-serif-thin"
             android:onClick="addtoCart"
             android:text="Add to cart"
             android:textSize="18sp"
-            app:backgroundTint="@color/design_default_color_primary_dark" />
+            />
 
         <Button
             android:id="@+id/button2"

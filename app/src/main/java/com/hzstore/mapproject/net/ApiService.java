@@ -1,15 +1,14 @@
 package com.hzstore.mapproject.net;
 
 import com.hzstore.mapproject.models.AccessToken;
+import com.hzstore.mapproject.models.Address;
+import com.hzstore.mapproject.models.Cart;
+import com.hzstore.mapproject.models.Cartitem;
+import com.hzstore.mapproject.models.Order;
+import com.hzstore.mapproject.models.Post;
+import com.hzstore.mapproject.models.Product;
+
 import com.hzstore.mapproject.models.User;
-import com.hzstore.mapproject.net.requests.AddtocartResponse;
-import com.hzstore.mapproject.net.requests.CartResponse;
-import com.hzstore.mapproject.net.requests.CartitemResponse;
-import com.hzstore.mapproject.net.requests.OrdersResponse;
-import com.hzstore.mapproject.net.requests.PostResponse;
-import com.hzstore.mapproject.net.requests.ProductResponse;
-import com.hzstore.mapproject.net.requests.ProductsResponse;
-import com.hzstore.mapproject.net.requests.UserResponse;
 import com.hzstore.mapproject.net.requests.ValueResponse;
 
 import java.util.List;
@@ -39,40 +38,44 @@ public interface ApiService {
     Call<AccessToken> refresh(@Field("refresh_token") String refreshToken);
 
     @GET("posts")
-    Call<PostResponse> posts();
+    Call<Post> posts();
 
     @GET("cart")
-    Call<CartResponse> cart();
+    Call<Cart> cart();
 
     @POST("cart/deleteitem")
     @FormUrlEncoded
-    Call<CartResponse> deleteCartItems(@Field("ids") String items);
+    Call<Cart> deleteCartItems(@Field("ids") String items);
 
 
     @POST("cart/addtocart")
     @FormUrlEncoded
-    Call<AddtocartResponse> addtocart(@Field("id") int product_id, @Field("count") int count);
+    Call<Cart> addtocart(@Field("id") int product_id, @Field("count") int count);
 
     @POST("cart/updateitem")
     @FormUrlEncoded
-    Call<CartitemResponse> updatecount(@Field("id") int product_id, @Field("count") int count);
+    Call<Cartitem> updatecount(@Field("id") int product_id, @Field("count") int count);
 
 
-    @POST("orders")
-    Call<OrdersResponse> orders();
+    @POST("account/orders")
+    Call<List<Order>> orders();
+
+    @POST("account/address")
+    Call<List<Address>> addresses();
 
     @POST("cart/count")
     Call<ValueResponse> cartcount();
 
     @GET("store")
-    Call<ProductsResponse> products();
+    Call<List<Product>> products();
 
     @GET("product/q")
-    Call<ProductResponse> product(@Query("id") int product_id);
+    Call<Product> product(@Query("id") int product_id);
 
 
     @GET("account")
-    Call<UserResponse> userdata();
+    Call<User> userdata();
+
 
 
 }

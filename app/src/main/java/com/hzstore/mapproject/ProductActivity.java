@@ -26,12 +26,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hzstore.mapproject.adapters.ProductReviewAdapter;
+import com.hzstore.mapproject.models.Cart;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.models.Product;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
-import com.hzstore.mapproject.net.requests.AddtocartResponse;
-import com.hzstore.mapproject.net.requests.ProductResponse;
+
 import com.hzstore.mapproject.net.requests.ValueResponse;
 import com.squareup.picasso.Picasso;
 
@@ -88,6 +88,12 @@ public class ProductActivity extends AppCompatActivity {
             }
         });
         */
+
+        if(HomeActivity.app.isLoggedin()){
+            updateCCount();
+        }else{
+
+        }
     }
 
     @Override
@@ -144,12 +150,12 @@ public class ProductActivity extends AppCompatActivity {
 
 
         //initialize products call
-        final Call<ProductResponse> product_call;
+        final Call<Product> product_call;
 
         product_call = service.product(productID);
-        product_call.enqueue(new Callback<ProductResponse>() {
+        product_call.enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<ProductResponse> call, retrofit2.Response<ProductResponse> response) {
+            public void onResponse(Call<Product> call, retrofit2.Response<Product> response) {
                 //print response
                 Log.w(TAG, "onResponse: " + response);
 
@@ -159,7 +165,7 @@ public class ProductActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     Log.d("PA", gson.toJson(response.body()));
 
-                    product = response.body().getData();
+                    product = response.body();
                     ImageView img = findViewById(R.id.productimg);
                     TextView price = findViewById(R.id.price);
                     RatingBar rate = findViewById(R.id.product_rating);
@@ -190,7 +196,7 @@ public class ProductActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProductResponse> call, Throwable t) {
+            public void onFailure(Call<Product> call, Throwable t) {
                 Log.w(TAG, "onFailure: " + t.getMessage());
 
             }
@@ -198,7 +204,12 @@ public class ProductActivity extends AppCompatActivity {
 
 
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(HomeActivity.app. isLoggedin())
+            updateCCount();
+    }
     public void updateCCount(){
 
         //refresh cart count
@@ -245,13 +256,13 @@ public class ProductActivity extends AppCompatActivity {
 
         if (HomeActivity.app.isLoggedin()) {
 //initialize products call
-            final Call<AddtocartResponse> addcart_call;
+            final Call<Cart> addcart_call;
             ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
 
             addcart_call = authservice.addtocart(product.getId(), 1);
-            addcart_call.enqueue(new Callback<AddtocartResponse>() {
+            addcart_call.enqueue(new Callback<Cart>() {
                 @Override
-                public void onResponse(Call<AddtocartResponse> call, retrofit2.Response<AddtocartResponse> response) {
+                public void onResponse(Call<Cart> call, retrofit2.Response<Cart> response) {
 //print response
                     Log.w(TAG, "onResponse: " + response);
 
@@ -280,7 +291,7 @@ public class ProductActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<AddtocartResponse> call, Throwable t) {
+                public void onFailure(Call<Cart> call, Throwable t) {
                     Log.w(TAG, "onFailure: " + t.getMessage());
 
                 }

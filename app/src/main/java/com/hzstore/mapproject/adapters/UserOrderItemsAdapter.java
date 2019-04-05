@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.fragments.CartItemFragment.OnListFragmentInteractionListener;
+import com.hzstore.mapproject.models.Orderitem;
 import com.hzstore.mapproject.models.Review;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -19,16 +21,16 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdapter.ViewHolder> {
+public class UserOrderItemsAdapter extends RecyclerView.Adapter<UserOrderItemsAdapter.ViewHolder> {
 
-    public final List<Review> mValues;
+    public final List<Orderitem> mValues;
 
     private ItemListener itemListener;
 
     public void setItemListener(ItemListener listener) {
         this.itemListener = listener;
     }
-    public void updateData(List<Review> viewModels) {
+    public void updateData(List<Orderitem> viewModels) {
         mValues.clear();
         mValues.addAll(viewModels);
         notifyDataSetChanged();
@@ -39,7 +41,7 @@ public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdap
        // void onCartitemUpdate(Review cartitem);
     }
 
-    public ProductReviewAdapter(List<Review> items) {
+    public UserOrderItemsAdapter(List<Orderitem> items) {
         mValues = items;
 
     }
@@ -47,7 +49,7 @@ public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.review_item, parent, false);
+                .inflate(R.layout.orderitem_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -55,14 +57,14 @@ public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdap
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         holder.mItem = mValues.get(position);
-      //  holder.mIdView.setText(mValues.get(position).getName());
-        //holder.mContentView.setText(mValues.get(position).getPrice());
+holder.order_price.setText( ""+holder.mItem.getProduct().getPrice());
+holder.order_name.setText(holder.mItem.getProduct().getName());
+holder.orderitem_qty.setText(""+holder.mItem.getQty());
+        Picasso.get().load("http://sabti-h.tech/hz-store/storage/img/" + holder.mItem.getProduct().getImage()).into(holder.order_image);
 
 
 
-holder.rev_name.setText(holder.mItem.getReviewer().getName());
-holder.rev_text.setText(holder.mItem.getReview());
-holder.rev_rb.setRating(holder.mItem.getRate());
+
     }
 
 
@@ -75,19 +77,20 @@ holder.rev_rb.setRating(holder.mItem.getRate());
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public Review mItem;
-        ImageView rev_image;
-        TextView rev_name, rev_text;
-        RatingBar rev_rb;
+        public Orderitem mItem;
+        ImageView order_image;
+        TextView order_name, order_price, orderitem_qty;
+
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
 
-            rev_image = view.findViewById(R.id.rev_img);
-            rev_name = view.findViewById(R.id.rev_name);
-            rev_text = view.findViewById(R.id.rev_text);
-            rev_rb = view.findViewById(R.id.rev_rating);
+order_image = view.findViewById(R.id.oiem_img);
+order_name = view.findViewById(R.id.oitem_name);
+order_price = view.findViewById(R.id.oitem_price);
+orderitem_qty = view.findViewById(R.id.oitem_count);
+
 
 
         }
@@ -96,7 +99,7 @@ holder.rev_rb.setRating(holder.mItem.getRate());
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mItem.getReview() + "'";
+            return super.toString() + " '" + mItem.toString() + "'";
         }
     }
 }

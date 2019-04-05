@@ -4,11 +4,20 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hzstore.mapproject.AccountActivity;
+import com.hzstore.mapproject.CartActivity;
 import com.hzstore.mapproject.R;
+import com.hzstore.mapproject.adapters.CartItemRecyclerViewAdapter;
+import com.hzstore.mapproject.adapters.UserOrdersAdapter;
+import com.hzstore.mapproject.models.Order;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +37,8 @@ public class OrdersFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    List<Order> orders;
+    public UserOrdersAdapter ordersadapter;
     private OnFragmentInteractionListener mListener;
 
     public OrdersFragment() {
@@ -38,17 +49,15 @@ public class OrdersFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param orders Parameter 1.
+
      * @return A new instance of fragment OrdersFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static OrdersFragment newInstance(String param1, String param2) {
+    public static OrdersFragment newInstance(List<Order> orders) {
         OrdersFragment fragment = new OrdersFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
+        fragment.orders = orders;
         return fragment;
     }
 
@@ -65,7 +74,26 @@ public class OrdersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_orders, container, false);
+        View view = inflater.inflate(R.layout.fragment_orders, container, false);
+
+
+        // Set the adapter
+        if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+            RecyclerView recyclerView = (RecyclerView) view;
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+            ordersadapter = new UserOrdersAdapter(orders);
+
+
+          //  ordersadapter.setItemListener((AccountActivity) getActivity());
+            recyclerView.setAdapter(ordersadapter);
+        }
+
+        return view;
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

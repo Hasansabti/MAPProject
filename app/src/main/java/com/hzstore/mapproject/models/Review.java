@@ -5,6 +5,7 @@ public class Review {
     private float rate;
     private String review;
   private int user;
+  private User reviewer;
 
     public int getId() {
         return id;
@@ -20,5 +21,9 @@ public class Review {
 
     public int getUser() {
         return user;
+    }
+
+    public User getReviewer() {
+        return reviewer;
     }
 }

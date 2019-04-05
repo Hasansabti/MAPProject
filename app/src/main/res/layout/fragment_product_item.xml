@@ -58,7 +58,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/item_number"
+                        android:id="@+id/addressname"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
@@ -72,7 +72,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/content"
+                        android:id="@+id/address_content"
                         android:layout_width="109dp"
                         android:layout_height="28dp"
                         android:layout_margin="@dimen/text_margin"
@@ -96,8 +96,8 @@
                         app:srcCompat="@drawable/ic_addcartblack"
                         card_view:layout_constraintEnd_toEndOf="parent"
                         card_view:layout_constraintHorizontal_bias="0.793"
-                        card_view:layout_constraintStart_toEndOf="@+id/content"
-                        card_view:layout_constraintTop_toBottomOf="@+id/item_number" />
+                        card_view:layout_constraintStart_toEndOf="@+id/address_content"
+                        card_view:layout_constraintTop_toBottomOf="@+id/addressname" />
 
                     <ProgressBar
                         android:id="@+id/loader_pcart"
@@ -110,8 +110,8 @@
                         android:visibility="invisible"
                         card_view:layout_constraintEnd_toEndOf="parent"
                         card_view:layout_constraintHorizontal_bias="0.911"
-                        card_view:layout_constraintStart_toEndOf="@+id/content"
-                        card_view:layout_constraintTop_toBottomOf="@+id/item_number" />
+                        card_view:layout_constraintStart_toEndOf="@+id/address_content"
+                        card_view:layout_constraintTop_toBottomOf="@+id/addressname" />
 
                     <RatingBar
                         android:id="@+id/prodlist_rating"
@@ -124,7 +124,7 @@
                         android:rating="4"
 
                         card_view:layout_constraintStart_toEndOf="@+id/productImage"
-                        card_view:layout_constraintTop_toBottomOf="@+id/item_number" />
+                        card_view:layout_constraintTop_toBottomOf="@+id/addressname" />
 
                     <TextView
                         android:id="@+id/rev_count"

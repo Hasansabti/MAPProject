@@ -3,30 +3,32 @@ package com.hzstore.mapproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hzstore.mapproject.adapters.ProductRecyclerViewAdapter;
 import com.hzstore.mapproject.fragments.ProductsFragment;
+import com.hzstore.mapproject.models.Product;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
-import com.hzstore.mapproject.net.requests.ProductsResponse;
 import com.hzstore.mapproject.net.requests.ValueResponse;
 import com.hzstore.mapproject.settings.SettingsActivity;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -159,14 +161,20 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_orders) {
             //show User's orders
             Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-            intent.putExtra("type", "Ordrs");
+            intent.putExtra("type", "orders");
             startActivity(intent);
 
 
-        } else if (id == R.id.nav_wishlist) {
+        }else if(id == R.id.nav_address){
+            Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
+            intent.putExtra("type", "address");
+            startActivity(intent);
+        }
+
+        else if (id == R.id.nav_wishlist) {
             //show User's wishlist
             Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-            intent.putExtra("type", "Wish");
+            intent.putExtra("type", "wish");
             startActivity(intent);
 
         } else if (id == R.id.nav_manage) {
@@ -192,12 +200,12 @@ public class HomeActivity extends AppCompatActivity
 
 
 //initialize products HZ-api call
-        Call<ProductsResponse> product_call;
+        Call<List<Product>> product_call;
         ApiService service = RetrofitBuilder.createService(ApiService.class);
         product_call = service.products();
-        product_call.enqueue(new Callback<ProductsResponse>() {
+        product_call.enqueue(new Callback<List<Product>>() {
             @Override
-            public void onResponse(Call<ProductsResponse> call, retrofit2.Response<ProductsResponse> response) {
+            public void onResponse(Call<List<Product>> call, retrofit2.Response<List<Product>> response) {
 //print response
                 Log.w(TAG, "onResponse: " + response);
 
@@ -207,11 +215,11 @@ public class HomeActivity extends AppCompatActivity
                   //  showProgress(false);
 
                     //show products list fragment once products are available and pass the products
-                    ProductsFragment pf = ProductsFragment.newInstance(response.body().getData());
+                    ProductsFragment pf = ProductsFragment.newInstance(response.body());
 
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-                    ft.add(R.id.main3, pf).commit();
+                    ft.add(R.id.main3, pf).commitAllowingStateLoss();
 
 
                 } else {
@@ -228,7 +236,7 @@ public class HomeActivity extends AppCompatActivity
             }
 
             @Override
-            public void onFailure(Call<ProductsResponse> call, Throwable t) {
+            public void onFailure(Call<List<Product>> call, Throwable t) {
                 Log.w(TAG, "onFailure: " + t.getMessage());
 
             }

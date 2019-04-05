@@ -17,6 +17,10 @@
             android:icon="@drawable/wishlist"
             android:title="Wish List" />
         <item
+            android:id="@+id/nav_address"
+            android:icon="@drawable/Address"
+            android:title="Address Book" />
+        <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Settings" />

@@ -1,10 +1,6 @@
 package com.hzstore.mapproject.adapters;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,23 +11,21 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hzstore.mapproject.CartActivity;
 import com.hzstore.mapproject.HomeActivity;
 import com.hzstore.mapproject.LoginActivity;
 import com.hzstore.mapproject.ProductActivity;
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.fragments.ProductsFragment.OnListFragmentInteractionListener;
 
-import com.hzstore.mapproject.models.Cartitem;
+import com.hzstore.mapproject.models.Cart;
 import com.hzstore.mapproject.models.Product;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
-import com.hzstore.mapproject.net.requests.AddtocartResponse;
+
 import com.squareup.picasso.Picasso;
 
 
-import java.io.InputStream;
 import java.util.List;
 
 import retrofit2.Call;
@@ -118,8 +112,8 @@ if(holder.mItem.getReviews() != null) {
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mIdView = (TextView) view.findViewById(R.id.addressname);
+            mContentView = (TextView) view.findViewById(R.id.address_content);
             imageView = view.findViewById(R.id.productImage);
             paddtocart = view.findViewById(R.id.p_addtocart);
             cProgress = view.findViewById(R.id.loader_pcart);
@@ -142,13 +136,13 @@ if(holder.mItem.getReviews() != null) {
             paddtocart.setVisibility(View.INVISIBLE);
             if (HomeActivity.app.isLoggedin()) {
             //initialize Add to cart call
-                final Call<AddtocartResponse> addcart_call;
+                final Call<Cart> addcart_call;
                 ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
 
                 addcart_call = authservice.addtocart(mItem.getId(), 1);
-                addcart_call.enqueue(new Callback<AddtocartResponse>() {
+                addcart_call.enqueue(new Callback<Cart>() {
                     @Override
-                    public void onResponse(Call<AddtocartResponse> call, retrofit2.Response<AddtocartResponse> response) {
+                    public void onResponse(Call<Cart> call, retrofit2.Response<Cart> response) {
                         cProgress.setVisibility(View.INVISIBLE);
                         paddtocart.setVisibility(View.VISIBLE);
                     //print response
@@ -177,7 +171,7 @@ if(holder.mItem.getReviews() != null) {
                     }
 
                     @Override
-                    public void onFailure(Call<AddtocartResponse> call, Throwable t) {
+                    public void onFailure(Call<Cart> call, Throwable t) {
                         cProgress.setVisibility(View.INVISIBLE);
                         paddtocart.setVisibility(View.VISIBLE);
                         Log.w("PI", "onFailure: " + t.getMessage());

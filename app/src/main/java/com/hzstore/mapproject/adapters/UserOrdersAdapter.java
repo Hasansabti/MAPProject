@@ -1,15 +1,20 @@
 package com.hzstore.mapproject.adapters;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.hzstore.mapproject.HomeActivity;
 import com.hzstore.mapproject.R;
 import com.hzstore.mapproject.fragments.CartItemFragment.OnListFragmentInteractionListener;
+import com.hzstore.mapproject.models.Order;
+import com.hzstore.mapproject.models.Orderitem;
 import com.hzstore.mapproject.models.Review;
 
 import java.util.List;
@@ -19,16 +24,16 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdapter.ViewHolder> {
+public class UserOrdersAdapter extends RecyclerView.Adapter<UserOrdersAdapter.ViewHolder> {
 
-    public final List<Review> mValues;
+    public final List<Order> mValues;
 
     private ItemListener itemListener;
 
     public void setItemListener(ItemListener listener) {
         this.itemListener = listener;
     }
-    public void updateData(List<Review> viewModels) {
+    public void updateData(List<Order> viewModels) {
         mValues.clear();
         mValues.addAll(viewModels);
         notifyDataSetChanged();
@@ -39,7 +44,7 @@ public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdap
        // void onCartitemUpdate(Review cartitem);
     }
 
-    public ProductReviewAdapter(List<Review> items) {
+    public UserOrdersAdapter(List<Order> items) {
         mValues = items;
 
     }
@@ -47,7 +52,7 @@ public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.review_item, parent, false);
+                .inflate(R.layout.order_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -55,14 +60,33 @@ public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdap
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         holder.mItem = mValues.get(position);
-      //  holder.mIdView.setText(mValues.get(position).getName());
-        //holder.mContentView.setText(mValues.get(position).getPrice());
+holder.orderid.setText(""+holder.mItem.getId());
+        holder.order_time.setText(holder.mItem.getOrderdate());
+        holder.tracking.setText(holder.mItem.getTracking());
+
+        holder.track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
 
 
-holder.rev_name.setText(holder.mItem.getReviewer().getName());
-holder.rev_text.setText(holder.mItem.getReview());
-holder.rev_rb.setRating(holder.mItem.getRate());
+            }
+        });
+
+
+        RecyclerView recyclerView = (RecyclerView) holder.items;
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(HomeActivity.app, LinearLayoutManager.VERTICAL, false));
+
+        UserOrderItemsAdapter orderitemssadapter = new UserOrderItemsAdapter(holder.mItem.getItems());
+
+
+        //  ordersadapter.setItemListener((AccountActivity) getActivity());
+        recyclerView.setAdapter(orderitemssadapter);
+
+
+
+
     }
 
 
@@ -75,19 +99,22 @@ holder.rev_rb.setRating(holder.mItem.getRate());
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public Review mItem;
-        ImageView rev_image;
-        TextView rev_name, rev_text;
+        public Order mItem;
+        ImageView order_image;
+        TextView orderid, order_time, tracking;
+       Button track;
         RatingBar rev_rb;
+       RecyclerView items;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            orderid = view.findViewById(R.id.orderid);
+order_time = view.findViewById(R.id.order_date);
+tracking = view.findViewById(R.id.order_track);
+track = view.findViewById(R.id.track_btn);
+        items = view.findViewById(R.id.orderitems);
 
-            rev_image = view.findViewById(R.id.rev_img);
-            rev_name = view.findViewById(R.id.rev_name);
-            rev_text = view.findViewById(R.id.rev_text);
-            rev_rb = view.findViewById(R.id.rev_rating);
 
 
         }
@@ -96,7 +123,7 @@ holder.rev_rb.setRating(holder.mItem.getRate());
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mItem.getReview() + "'";
+            return super.toString() + " '" + mItem.toString() + "'";
         }
     }
 }

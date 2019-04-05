@@ -2,9 +2,6 @@ package com.hzstore.mapproject.adapters;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,11 +24,10 @@ import com.hzstore.mapproject.models.Cartitem;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
-import com.hzstore.mapproject.net.requests.CartitemResponse;
+
 import com.squareup.picasso.Picasso;
 
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +43,7 @@ import retrofit2.Response;
 public class CartItemRecyclerViewAdapter extends RecyclerView.Adapter<CartItemRecyclerViewAdapter.ViewHolder> {
 
     public final List<Cartitem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+
     private ItemListener itemListener;
 List<Integer> selected = new ArrayList<>();
 
@@ -69,9 +65,9 @@ return selected;
         void onCartitemUpdate(Cartitem cartitem);
     }
 
-    public CartItemRecyclerViewAdapter(List<Cartitem> items, OnListFragmentInteractionListener listener) {
+    public CartItemRecyclerViewAdapter(List<Cartitem> items) {
         mValues = items;
-        mListener = listener;
+
     }
 
     @Override
@@ -118,16 +114,7 @@ if(selected.contains(holder.mItem.getId())){
             }
         });
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+
     }
 
 
@@ -154,12 +141,12 @@ if(selected.contains(holder.mItem.getId())){
 
             cart_minus_img=(ImageView) view.findViewById(R.id.minus_item);
             cart_plus_img=(ImageView) view.findViewById(R.id.plus_item);
-            item_img=(ImageView) view.findViewById(R.id.cartiem_img);
+            item_img=(ImageView) view.findViewById(R.id.oiem_img);
           //  img_deleteitem=(ImageView) itemView.findViewById(R.id.img_deleteitem);
-            itemname=(TextView) view.findViewById(R.id.crtname_name);
+            itemname=(TextView) view.findViewById(R.id.oitem_name);
             itemprice=(TextView) view.findViewById(R.id.crtitem_price);
           //  itemsize=(TextView) itemView.findViewById(R.id.itemsize);
-            tv_quantity=(TextView) view.findViewById(R.id.crt_count);
+            tv_quantity=(TextView) view.findViewById(R.id.oitem_count);
             mProgressView = view.findViewById(R.id.loader_ca);
             checkBox = view.findViewById(R.id.chk_selectitem);
 
@@ -193,19 +180,19 @@ if(selected.contains(holder.mItem.getId())){
 
         public void updateCount(int itemid,int value){
 showProgress(true);
-            Call<CartitemResponse> usercall;
+            Call<Cartitem> usercall;
             ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
             usercall = authservice.updatecount(itemid,value);
-            usercall.enqueue(new Callback<CartitemResponse>() {
+            usercall.enqueue(new Callback<Cartitem>() {
                 @Override
-                public void onResponse(Call<CartitemResponse> call, Response<CartitemResponse> response) {
+                public void onResponse(Call<Cartitem> call, Response<Cartitem> response) {
 
                     Log.w("CA", "onResponse: " + response);
 
                     if (response.isSuccessful()) {
 
                         showProgress(false);
-mItem = response.body().getData();
+mItem = response.body();
 
                         tv_quantity.setText("" + mItem.getCount());
                         if(itemListener != null){
@@ -235,7 +222,7 @@ mItem = response.body().getData();
                 }
 
                 @Override
-                public void onFailure(Call<CartitemResponse> call, Throwable t) {
+                public void onFailure(Call<Cartitem> call, Throwable t) {
                     Log.w("CA", "onFailure: " + t.getMessage());
                    // showForm();
                 }

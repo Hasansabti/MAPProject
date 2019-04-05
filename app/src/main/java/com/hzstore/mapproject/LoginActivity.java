@@ -40,10 +40,10 @@ import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 import com.hzstore.mapproject.models.AccessToken;
+import com.hzstore.mapproject.models.User;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
-import com.hzstore.mapproject.net.requests.UserResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -305,12 +305,12 @@ getUserdata();
 
     private void getUserdata() {
 
-        Call<UserResponse> usercall;
+        Call<User> usercall;
         ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, tokenManager);
         usercall = authservice.userdata();
-        usercall.enqueue(new Callback<UserResponse>() {
+        usercall.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
 
                 Log.w(TAG, "onResponse: " + response);
 
@@ -318,7 +318,7 @@ getUserdata();
 
                     showProgress(false);
 
-                  accountManager.saveUserdata(response.body().getData());
+                  accountManager.saveUserdata(response.body());
                     // startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
 
@@ -340,7 +340,7 @@ getUserdata();
             }
 
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Log.w(TAG, "onFailure: " + t.getMessage());
                 showForm();
             }
