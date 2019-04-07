@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -47,7 +48,15 @@ public class AccountActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        String type = getIntent().getExtras().getString("type");
+        if (type.equalsIgnoreCase("address")) {
+            getMenuInflater().inflate(R.menu.address, menu);
+        }
+        return true;
+    }
     public void requestOrders(){
         if(HomeActivity.app.isLoggedin()) {
             showProgress(true);
