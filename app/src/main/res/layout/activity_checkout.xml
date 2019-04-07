@@ -6,6 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".CheckoutActivity">
 
+    <ProgressBar
+        android:id="@+id/loader_address"
+
+        android:layout_width="77dp"
+        android:layout_height="76dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btn_placeorder2"
         android:layout_width="match_parent"
@@ -14,7 +30,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="8dp"
         android:onClick="placeOrder"
-        android:text="Place Order"
+        android:text="Save Address"
         android:textColor="@android:color/white"
         android:theme="@style/Theme.MaterialButton"
         app:layout_constraintBottom_toBottomOf="parent"></Button>
@@ -32,7 +48,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/fname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -41,12 +57,12 @@
             android:inputType="textPersonName" />
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/lname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Lant name"
+            android:hint="Last name"
             android:inputType="textPersonName" />
     </LinearLayout>
 
@@ -63,7 +79,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
         <EditText
-            android:id="@+id/editText3"
+            android:id="@+id/address1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -85,7 +101,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <EditText
-            android:id="@+id/editText4"
+            android:id="@+id/address2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -95,6 +111,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -106,7 +123,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
         <EditText
-            android:id="@+id/editText5"
+            android:id="@+id/postcode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -115,7 +132,7 @@
             android:inputType="textPersonName" />
 
         <EditText
-            android:id="@+id/editText6"
+            android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

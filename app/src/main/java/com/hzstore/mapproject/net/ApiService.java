@@ -60,6 +60,10 @@ public interface ApiService {
     @POST("account/orders")
     Call<List<Order>> orders();
 
+    @POST("account/address/add")
+    @FormUrlEncoded
+    Call<Address> add_addresses(@Field("fname") String fname, @Field("lname") String lname, @Field("address1") String address1, @Field("address2") String address2, @Field("postcode") String code, @Field("phone") String phone);
+
     @POST("account/address")
     Call<List<Address>> addresses();
 

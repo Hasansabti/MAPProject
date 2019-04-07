@@ -134,7 +134,7 @@ if(holder.mItem.getReviews() != null) {
         public void addtoCart() {
             cProgress.setVisibility(View.VISIBLE);
             paddtocart.setVisibility(View.INVISIBLE);
-            if (HomeActivity.app.isLoggedin()) {
+            if (HomeActivity.app.isLoggedin(HomeActivity.tokenManager)) {
             //initialize Add to cart call
                 final Call<Cart> addcart_call;
                 ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);

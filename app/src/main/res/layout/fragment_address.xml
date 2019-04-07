@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:text="10"
+        android:text="name"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -30,9 +30,23 @@
         android:layout_margin="@dimen/text_margin"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="cntnt"
+        android:text="address"
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addressname" />
+
+    <TextView
+        android:id="@+id/phone_num"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="0000000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/address_content" />
 </android.support.constraint.ConstraintLayout>

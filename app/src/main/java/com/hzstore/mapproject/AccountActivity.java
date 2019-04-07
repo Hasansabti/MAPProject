@@ -3,6 +3,7 @@ package com.hzstore.mapproject;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -30,18 +31,21 @@ import retrofit2.Callback;
 public class AccountActivity extends AppCompatActivity {
     private static final String TAG = "AccountActivity";
     private View mProgressView;
+    TokenManager tokenManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tokenManager = TokenManager.getInstance(getSharedPreferences("prefs", MODE_PRIVATE));
         setContentView(R.layout.activity_account);
         //place fragment based on the action of the user
         mProgressView = findViewById(R.id.loader_account);
         String type = getIntent().getExtras().getString("type");
         if (type.equalsIgnoreCase("orders")){
-
+            setTitle("My Orders");
 
            requestOrders();
         }else if (type.equalsIgnoreCase("address")){
+            setTitle("My Addresses");
             requestAddresses();
         }
 
@@ -53,12 +57,13 @@ public class AccountActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         String type = getIntent().getExtras().getString("type");
         if (type.equalsIgnoreCase("address")) {
+
             getMenuInflater().inflate(R.menu.address, menu);
         }
         return true;
     }
     public void requestOrders(){
-        if(HomeActivity.app.isLoggedin()) {
+        if(HomeActivity.app.isLoggedin(tokenManager)) {
             showProgress(true);
 //initialize products call
             final Call<List<Order>> cart_call;
@@ -111,11 +116,11 @@ public class AccountActivity extends AppCompatActivity {
 
 
     private void requestAddresses() {
-        if(HomeActivity.app.isLoggedin()) {
+        if(HomeActivity.isLoggedin(tokenManager)) {
             showProgress(true);
 //initialize products call
             final Call<List<Address>> cart_call;
-            ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
+            ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, tokenManager);
 
             cart_call = authservice.addresses();
             cart_call.enqueue(new Callback<List<Address>>() {
@@ -171,7 +176,10 @@ public class AccountActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_cartitem_remove) {
+        if (id == R.id.address_add) {
+            Intent intent = new Intent(getApplicationContext(),CheckoutActivity.class);
+
+            startActivity(intent);
 
             return true;
         }else   if (id==android.R.id.home) {

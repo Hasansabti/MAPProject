@@ -89,7 +89,7 @@ public class ProductActivity extends AppCompatActivity {
         });
         */
 
-        if(HomeActivity.app.isLoggedin()){
+        if(HomeActivity.app.isLoggedin(HomeActivity.tokenManager)){
             updateCCount();
         }else{
 
@@ -207,7 +207,7 @@ public class ProductActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(HomeActivity.app. isLoggedin())
+        if(HomeActivity.app. isLoggedin(HomeActivity.tokenManager))
             updateCCount();
     }
     public void updateCCount(){
@@ -254,7 +254,7 @@ public class ProductActivity extends AppCompatActivity {
     //network function
     public void addtoCart(final View v) {
 
-        if (HomeActivity.app.isLoggedin()) {
+        if (HomeActivity.app.isLoggedin(HomeActivity.tokenManager)) {
 //initialize products call
             final Call<Cart> addcart_call;
             ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
@@ -297,7 +297,8 @@ public class ProductActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(this, "You are not logged in", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+            startActivity(intent);
         }
     }
 

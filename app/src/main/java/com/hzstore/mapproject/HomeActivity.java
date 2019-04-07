@@ -37,7 +37,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ProductRecyclerViewAdapter.ProductListener {
     private static final String TAG = "HomeActivity";
     public static HomeActivity app;
-    public TokenManager tokenManager;
+    public static TokenManager tokenManager;
     public  AccountManager accountManager;
     TextView loginbtn;
     TextView cartcounttv;
@@ -70,7 +70,7 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 //Login toggle button
-                if (isLoggedin()) {
+                if (isLoggedin(tokenManager)) {
                     performLogout();
 
                 } else {
@@ -257,14 +257,14 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(isLoggedin())
+        if(isLoggedin(tokenManager))
             updateCCount();
     }
 
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
         super.onActivityReenter(resultCode, data);
-        if(isLoggedin())
+        if(isLoggedin(tokenManager))
             updateCCount();
 
     }
@@ -330,9 +330,9 @@ cartcounttv.setText(""+(int)count);
         Log.d("Home","Logging out");
     }
 
-    public boolean isLoggedin() {
+    public static boolean isLoggedin(TokenManager tm) {
 
-        return tokenManager.getToken().getAccessToken() != null;
+        return tm.getToken().getAccessToken() != null;
 
 
     }

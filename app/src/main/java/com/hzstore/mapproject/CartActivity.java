@@ -48,7 +48,7 @@ Cart mycart;
     }
 
     public void getItems(){
-        if(HomeActivity.app.isLoggedin()) {
+        if(HomeActivity.app.isLoggedin(HomeActivity.tokenManager)) {
             showProgress(true);
 //initialize products call
             final Call<Cart> cart_call;
@@ -104,7 +104,8 @@ showProgress(false);
                 }
             });
         }else{
-            Toast.makeText(this,"You are not logged in",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+            startActivity(intent);
         }
     }
     @Override
@@ -163,7 +164,7 @@ showProgress(false);
     }
 
     public void deleteSelected(){
-        if(HomeActivity.app.isLoggedin() ){
+        if(HomeActivity.app.isLoggedin(HomeActivity.tokenManager) ){
             if(cartif.selecteditemIds().size()>0) {
 //initialize products call
                 final Call<Cart> cart_call;
@@ -219,7 +220,10 @@ showProgress(false);
                 Toast.makeText(this,"No items selected",Toast.LENGTH_SHORT).show();
             }
         }else{
-            Toast.makeText(this,"You are not logged in",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+            startActivity(intent);
+
+            // Toast.makeText(this,"You are not logged in",Toast.LENGTH_SHORT).show();
         }
     }
 

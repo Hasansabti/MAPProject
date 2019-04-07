@@ -39,7 +39,7 @@ public class MyaddressAdapter extends RecyclerView.Adapter<MyaddressAdapter.View
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getFname() + " " +holder.mItem.getLname());
         holder.mContentView.setText(mValues.get(position).getAddress1());
-
+holder.mPhoneView.setText(holder.mItem.getPhone());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,13 +54,16 @@ public class MyaddressAdapter extends RecyclerView.Adapter<MyaddressAdapter.View
 
     @Override
     public int getItemCount() {
+        if(mValues != null)
         return mValues.size();
+        else return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final TextView mPhoneView;
         public Address mItem;
 
         public ViewHolder(View view) {
@@ -68,6 +71,7 @@ public class MyaddressAdapter extends RecyclerView.Adapter<MyaddressAdapter.View
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.addressname);
             mContentView = (TextView) view.findViewById(R.id.address_content);
+       mPhoneView = view.findViewById(R.id.phone_num);
         }
 
         @Override

@@ -19,7 +19,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class RetrofitBuilder {
 
-    private static final String BASE_URL = HomeActivity.app.getString(R.string.myapi);
+    private static final String BASE_URL = "http://sabti-h.tech/hz-store/api/";
 
     private final static OkHttpClient client = buildClient();
     private final static Retrofit retrofit = buildRetrofit(client);
