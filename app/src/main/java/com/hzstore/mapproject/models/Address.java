@@ -1,6 +1,7 @@
 package com.hzstore.mapproject.models;
 
 public class Address {
+    int id;
     String fname;
     String lname;
     String address1;
@@ -32,4 +33,9 @@ public class Address {
     public String getPhone() {
         return phone;
     }
+
+    public int getID() {
+        return id;
+    }
+
 }

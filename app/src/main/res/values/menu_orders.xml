@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="rec_option">"I didn't receive it"</string>
+    <string name="return_option">Return item</string>
+    <string name="replace_option">Replace item</string>
+    <string name="contact_option">Contact seller</string>
+</resources>

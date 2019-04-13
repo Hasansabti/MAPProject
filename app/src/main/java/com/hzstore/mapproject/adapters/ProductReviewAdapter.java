@@ -36,7 +36,7 @@ public class ProductReviewAdapter extends RecyclerView.Adapter<ProductReviewAdap
 
 
     public interface ItemListener {
-       // void onCartitemUpdate(Review cartitem);
+       // void onAddressSelected(Review cartitem);
     }
 
     public ProductReviewAdapter(List<Review> items) {

@@ -69,9 +69,9 @@ holder.mPhoneView.setText(holder.mItem.getPhone());
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.addressname);
-            mContentView = (TextView) view.findViewById(R.id.address_content);
-       mPhoneView = view.findViewById(R.id.phone_num);
+            mIdView = (TextView) view.findViewById(R.id.aname);
+            mContentView = (TextView) view.findViewById(R.id.aaddress);
+       mPhoneView = view.findViewById(R.id.anum);
         }
 
         @Override

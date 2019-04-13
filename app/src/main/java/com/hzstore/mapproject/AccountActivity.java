@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,7 +87,7 @@ public class AccountActivity extends AppCompatActivity {
 
                         OrdersFragment pf = OrdersFragment.newInstance(myorders);
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        ft.add(R.id.account_content, pf).commit();
+                        ft.add(R.id.account_content, pf).commitAllowingStateLoss();
 
 
                         showProgress(false);
@@ -113,6 +114,8 @@ public class AccountActivity extends AppCompatActivity {
             Toast.makeText(this,"You are not logged in",Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 
     private void requestAddresses() {
@@ -177,7 +180,7 @@ public class AccountActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.address_add) {
-            Intent intent = new Intent(getApplicationContext(),CheckoutActivity.class);
+            Intent intent = new Intent(getApplicationContext(), AddAddressActivity.class);
 
             startActivity(intent);
 

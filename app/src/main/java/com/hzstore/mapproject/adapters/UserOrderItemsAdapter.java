@@ -38,7 +38,7 @@ public class UserOrderItemsAdapter extends RecyclerView.Adapter<UserOrderItemsAd
 
 
     public interface ItemListener {
-       // void onCartitemUpdate(Review cartitem);
+       // void onAddressSelected(Review cartitem);
     }
 
     public UserOrderItemsAdapter(List<Orderitem> items) {

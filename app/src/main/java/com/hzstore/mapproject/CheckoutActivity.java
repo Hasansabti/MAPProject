@@ -8,86 +8,84 @@ import android.os.Build;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hzstore.mapproject.fragments.CartItemFragment;
+import com.hzstore.mapproject.adapters.MyaddressAdapter;
+import com.hzstore.mapproject.adapters.SelectaddressAdapter;
+import com.hzstore.mapproject.fragments.addressFragment;
 import com.hzstore.mapproject.models.Address;
-import com.hzstore.mapproject.models.Cart;
-import com.hzstore.mapproject.models.Cartitem;
 import com.hzstore.mapproject.net.ApiError;
 import com.hzstore.mapproject.net.ApiService;
 import com.hzstore.mapproject.net.RetrofitBuilder;
 
-import butterknife.BindView;
-import butterknife.BindViews;
-import butterknife.ButterKnife;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class CheckoutActivity extends AppCompatActivity {
-    private static final String TAG = "AddressActivity";
+public class CheckoutActivity extends AppCompatActivity implements SelectaddressAdapter.ItemListener {
     private View mProgressView;
     TokenManager tokenManager;
-
-    TextView  fname;
-
-    TextView lname;
-
-    TextView address1;
-
-    TextView address2;
-
-    TextView postcode;
-
-    TextView phone;
-
+    RecyclerView addresslist;
+    SelectaddressAdapter adapter;
+    CheckoutActivity activity;
+    Address selected_address;
+    TextView addAddress;
+    private static final String TAG = "CheckoutActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tokenManager = TokenManager.getInstance(getSharedPreferences("prefs", MODE_PRIVATE));
         setContentView(R.layout.activity_checkout);
-       fname = findViewById(R.id.fname);
-        lname = findViewById(R.id.lname);
-        address1 = findViewById(R.id.address1);
-        address2 = findViewById(R.id.address2);
-        postcode = findViewById(R.id.postcode);
-        phone = findViewById(R.id.phone);
-
+        setTitle("Select Address");
+        activity = this;
+        tokenManager = TokenManager.getInstance(getSharedPreferences("prefs", MODE_PRIVATE));
+addAddress = findViewById(R.id.add_address);
+        mProgressView = findViewById(R.id.loader_checkout);
+        addresslist = findViewById(R.id.list_selectaddress);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mProgressView = findViewById(R.id.loader_address);
-
+      //  requestAddresses();
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        if (id==android.R.id.home) {
+ if (id==android.R.id.home) {
             finish();
         }
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
+    public void placeOrder(View v) {
 
-    public void placeOrder(View v){
+        if (HomeActivity.app.isLoggedin(tokenManager)) {
+            if (selected_address == null) {
 
-        if(HomeActivity.app.isLoggedin(tokenManager)) {
+                Toast.makeText(CheckoutActivity.this, "Please select an address where your item will be delivered", Toast.LENGTH_LONG).show();
+
+                return;
+            }
             showProgress(true);
 //initialize products call
-            final Call<Address> cart_call;
+            final Call<String> cart_call;
             ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, tokenManager);
 
-            cart_call = authservice.add_addresses(fname.getText().toString(),lname.getText().toString(),address1.getText().toString(),address2.getText().toString(),postcode.getText().toString(),phone.getText().toString());
-            cart_call.enqueue(new Callback<Address>() {
+            cart_call = authservice.placeorder(selected_address.getID());
+            cart_call.enqueue(new Callback<String>() {
                 @Override
-                public void onResponse(Call<Address> call, retrofit2.Response<Address> response) {
+                public void onResponse(Call<String> call, retrofit2.Response<String> response) {
 //print response
 
                     Gson gson = new Gson();
@@ -97,11 +95,15 @@ public class CheckoutActivity extends AppCompatActivity {
 
                     //check the validity of the response
                     if (response.isSuccessful()) {
-                        Address address = response.body();
-finish();
+                        String msg = response.body();
 
+                        //Toast.makeText(CheckoutActivity.this, "", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(activity, ThankyouActivity.class);
+                        intent.putExtra("msg", msg);
+activity.startActivity(intent);
+                        finish();
 
-                    showProgress(false);
+                        showProgress(false);
                     } else {
                         if (response.code() == 422) {
                             // handleErrors(response.errorBody());
@@ -116,7 +118,7 @@ finish();
                 }
 
                 @Override
-                public void onFailure(Call<Address> call, Throwable t) {
+                public void onFailure(Call<String> call, Throwable t) {
                     Log.w(TAG, "onFailure: " + t.getMessage());
                     showProgress(false);
                     Toast.makeText(CheckoutActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
@@ -124,11 +126,89 @@ finish();
 
                 }
             });
-        }else{
-            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+        } else {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         }
     }
+
+    private void requestAddresses() {
+        if (HomeActivity.isLoggedin(tokenManager)) {
+            showProgress(true);
+//initialize products call
+            final Call<List<Address>> cart_call;
+            ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, tokenManager);
+
+            cart_call = authservice.addresses();
+            cart_call.enqueue(new Callback<List<Address>>() {
+                @Override
+                public void onResponse(Call<List<Address>> call, retrofit2.Response<List<Address>> response) {
+//print response
+
+                    Gson gson = new Gson();
+                    Log.d("CA", gson.toJson(response.body()));
+
+                    Log.w(TAG, "onResponse: " + response);
+
+                    //check the validity of the response
+                    if (response.isSuccessful()) {
+                        List<Address> myaddress = response.body();
+
+                        if(myaddress.isEmpty()){
+                            addAddress.setVisibility(View.VISIBLE);
+                            addAddress.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(getApplicationContext(),AddAddressActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                        }else {
+                            addAddress.setVisibility(View.GONE);
+                            adapter = new SelectaddressAdapter(myaddress, activity);
+                            addresslist.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
+                                    DividerItemDecoration.VERTICAL));
+                            // if (adapter.getItemCount() <= 1) {
+                            addresslist.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                            // } else {
+                            //    addresslist.setLayoutManager(new GridLayoutManager(addresslist.getContext(), adapter.getItemCount()));
+                            // }
+                            addresslist.setAdapter(adapter);
+                        }
+
+                        showProgress(false);
+                    } else {
+                        if (response.code() == 422) {
+                            // handleErrors(response.errorBody());
+                        }
+                        if (response.code() == 401) {
+                            ApiError apiError = com.hzstore.mapproject.Utils.converErrors(response.errorBody());
+                            Toast.makeText(CheckoutActivity.this, apiError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<List<Address>> call, Throwable t) {
+                    Log.w(TAG, "onFailure: " + t.getMessage());
+
+                }
+            });
+        } else {
+            Toast.makeText(this, "You are not logged in", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        requestAddresses();
+    }
+
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -156,5 +236,10 @@ finish();
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
 
         }
+    }
+
+    @Override
+    public void onAddressSelected(Address address) {
+        this.selected_address = address;
     }
 }

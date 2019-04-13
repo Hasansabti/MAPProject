@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_rec"
+        android:title="@string/rec_option" />
+    <item
+        android:id="@+id/menu_return"
+        android:title="@string/return_option"/>
+    <item
+        android:id="@+id/menu_replace"
+        android:title="@string/replace_option"/>
+    <item
+        android:id="@+id/menu_contact"
+        android:title="@string/contact_option" />
+
+</menu>

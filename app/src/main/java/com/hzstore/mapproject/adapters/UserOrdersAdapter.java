@@ -1,8 +1,10 @@
 package com.hzstore.mapproject.adapters;
 
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,7 +43,7 @@ public class UserOrdersAdapter extends RecyclerView.Adapter<UserOrdersAdapter.Vi
 
 
     public interface ItemListener {
-       // void onCartitemUpdate(Review cartitem);
+       // void onAddressSelected(Review cartitem);
     }
 
     public UserOrdersAdapter(List<Order> items) {
@@ -72,7 +74,16 @@ holder.orderid.setText(""+holder.mItem.getId());
 
             }
         });
+holder.dispute.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
 
+        PopupMenu popup = new PopupMenu(view.getContext(), view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.order_menu, popup.getMenu());
+        popup.show();
+    }
+});
 
         RecyclerView recyclerView = (RecyclerView) holder.items;
 
@@ -102,7 +113,7 @@ holder.orderid.setText(""+holder.mItem.getId());
         public Order mItem;
         ImageView order_image;
         TextView orderid, order_time, tracking;
-       Button track;
+       Button track, dispute;
         RatingBar rev_rb;
        RecyclerView items;
 
@@ -114,6 +125,8 @@ order_time = view.findViewById(R.id.order_date);
 tracking = view.findViewById(R.id.order_track);
 track = view.findViewById(R.id.track_btn);
         items = view.findViewById(R.id.orderitems);
+        dispute = view.findViewById(R.id.dispute_btn);
+
 
 
 

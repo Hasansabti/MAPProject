@@ -40,7 +40,7 @@
                     android:weightSum="5">
 
                     <Button
-                        android:id="@+id/track_btn2"
+                        android:id="@+id/dispute_btn"
                         style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="151dp"
                         android:layout_height="50dp"

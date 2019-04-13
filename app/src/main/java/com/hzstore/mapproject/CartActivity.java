@@ -31,24 +31,30 @@ public class CartActivity extends AppCompatActivity implements CartItemRecyclerV
     private static final String TAG = "CartActivity";
 Cart mycart;
     CartItemFragment cartif;
+    TokenManager tokenManager;
     private View mProgressView;
+    TextView cartempty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+        tokenManager = TokenManager.getInstance(getSharedPreferences("prefs", MODE_PRIVATE));
 
+        setTitle("My Cart");
         mProgressView = findViewById(R.id.loader_cart);
+        cartempty = findViewById(R.id.cart_empty);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getItems();
+       // getItems();
     }
 
     public void gotoCheckout(View v){
-        Intent intent = new Intent(this,CheckoutActivity.class);
+        Intent intent = new Intent(this, CheckoutActivity.class);
         startActivity(intent);
     }
 
     public void getItems(){
-        if(HomeActivity.app.isLoggedin(HomeActivity.tokenManager)) {
+        if(tokenManager.getToken().getAccessToken() != null) {
             showProgress(true);
 //initialize products call
             final Call<Cart> cart_call;
@@ -69,20 +75,26 @@ Cart mycart;
                     if (response.isSuccessful()) {
                         mycart = response.body();
 
+if(mycart.getCartitem().isEmpty()){
+    cartempty.setVisibility(View.VISIBLE);
+    findViewById(R.id.cart_list).setVisibility(View.GONE);
+}else {
+    findViewById(R.id.cart_list).setVisibility(View.VISIBLE);
+    cartempty.setVisibility(View.GONE);
+}
+    cartif = CartItemFragment.newInstance(mycart.getCartitem());
 
+    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-                        cartif = CartItemFragment.newInstance(mycart.getCartitem());
+    ft.add(R.id.cart_list, cartif).commit();
+    int totalItems = 0;
+    for (Cartitem ci : mycart.getCartitem()) {
+        totalItems += ci.getCount();
+    }
 
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    ((TextView) findViewById(R.id.tv_total)).setText(totalItems + " item/s");
+    ((TextView) findViewById(R.id.cart_total)).setText("" + mycart.getTotal() + " SR");
 
-                        ft.add(R.id.cart_list, cartif).commit();
-                        int totalItems = 0;
-                        for(Cartitem ci : mycart.getCartitem()){
-                            totalItems += ci.getCount();
-                        }
-
-                        ((TextView)findViewById(R.id.tv_total)).setText(totalItems +" item/s");
-                        ((TextView)findViewById(R.id.cart_total)).setText(""+mycart.getTotal() +" SR");
 showProgress(false);
                     } else {
                         if (response.code() == 422) {
@@ -114,7 +126,12 @@ showProgress(false);
         getMenuInflater().inflate(R.menu.cart, menu);
         return true;
     }
+    @Override
+    public void onResume(){
+        super.onResume();
 
+        getItems();
+    }
 
 
     @Override
@@ -164,7 +181,7 @@ showProgress(false);
     }
 
     public void deleteSelected(){
-        if(HomeActivity.app.isLoggedin(HomeActivity.tokenManager) ){
+        if(tokenManager.getToken().getAccessToken() != null ){
             if(cartif.selecteditemIds().size()>0) {
 //initialize products call
                 final Call<Cart> cart_call;

@@ -67,6 +67,12 @@ public interface ApiService {
     @POST("account/address")
     Call<List<Address>> addresses();
 
+    @POST("checkout/placeorder")
+    @FormUrlEncoded
+    Call<String> placeorder( @Field("addressid") int addressid);
+
+
+
     @POST("cart/count")
     Call<ValueResponse> cartcount();
 

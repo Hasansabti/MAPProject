@@ -112,8 +112,8 @@ if(holder.mItem.getReviews() != null) {
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.addressname);
-            mContentView = (TextView) view.findViewById(R.id.address_content);
+            mIdView = (TextView) view.findViewById(R.id.select_aname);
+            mContentView = (TextView) view.findViewById(R.id.aaddress);
             imageView = view.findViewById(R.id.productImage);
             paddtocart = view.findViewById(R.id.p_addtocart);
             cProgress = view.findViewById(R.id.loader_pcart);

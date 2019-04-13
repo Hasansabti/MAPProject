@@ -3,6 +3,7 @@ package com.hzstore.mapproject;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -74,7 +75,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     LinearLayout formContainer;
     @BindView(R.id.loader)
     ProgressBar loader;
-
+TextView goto_register;
     ApiService service;
     TokenManager tokenManager;
     AccountManager accountManager;
@@ -107,6 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         ButterKnife.bind(this);
 formContainer = findViewById(R.id.form_container);
 loader = findViewById(R.id.loader);
+goto_register = findViewById(R.id.go_to_register);
         service = RetrofitBuilder.createService(ApiService.class);
         tokenManager = HomeActivity.app.tokenManager;
         accountManager = HomeActivity.app.accountManager;
@@ -132,6 +134,13 @@ loader = findViewById(R.id.loader);
                     return true;
                 }
                 return false;
+            }
+        });
+        goto_register.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+                startActivity(intent);
             }
         });
 
