@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     LinearLayout formContainer;
     @BindView(R.id.loader)
-    ProgressBar loader;
+   // ProgressBar loader;
 TextView goto_register;
     ApiService service;
     TokenManager tokenManager;
@@ -107,11 +107,11 @@ TextView goto_register;
 
         ButterKnife.bind(this);
 formContainer = findViewById(R.id.form_container);
-loader = findViewById(R.id.loader);
+//loader = findViewById(R.id.loader);
 goto_register = findViewById(R.id.go_to_register);
         service = RetrofitBuilder.createService(ApiService.class);
-        tokenManager = HomeActivity.app.tokenManager;
-        accountManager = HomeActivity.app.accountManager;
+        tokenManager = TokenManager.getInstance(getSharedPreferences("prefs", MODE_PRIVATE));
+        accountManager = AccountManager.getInstance(getSharedPreferences("prefs", MODE_PRIVATE));
         validator = new AwesomeValidation(ValidationStyle.TEXT_INPUT_LAYOUT);
         //  facebookManager = new FacebookManager(service, tokenManager);
         setupRules();
@@ -140,6 +140,7 @@ goto_register = findViewById(R.id.go_to_register);
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+                finish();
                 startActivity(intent);
             }
         });
@@ -360,7 +361,7 @@ getUserdata();
     private void showForm() {
       //  TransitionManager.beginDelayedTransition(container);
   //      formContainer.setVisibility(View.VISIBLE);
-        loader.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.GONE);
     }
 
     private void handleErrors(ResponseBody response) {

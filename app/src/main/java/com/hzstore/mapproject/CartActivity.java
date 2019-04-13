@@ -34,6 +34,7 @@ Cart mycart;
     TokenManager tokenManager;
     private View mProgressView;
     TextView cartempty;
+    View cartactions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,8 @@ Cart mycart;
         cartempty = findViewById(R.id.cart_empty);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        // getItems();
+
+        cartactions = findViewById(R.id.cart_actions);
     }
 
     public void gotoCheckout(View v){
@@ -76,9 +79,11 @@ Cart mycart;
                         mycart = response.body();
 
 if(mycart.getCartitem().isEmpty()){
+    cartactions.setVisibility(View.INVISIBLE);
     cartempty.setVisibility(View.VISIBLE);
     findViewById(R.id.cart_list).setVisibility(View.GONE);
 }else {
+    cartactions.setVisibility(View.VISIBLE);
     findViewById(R.id.cart_list).setVisibility(View.VISIBLE);
     cartempty.setVisibility(View.GONE);
 }
@@ -183,6 +188,7 @@ showProgress(false);
     public void deleteSelected(){
         if(tokenManager.getToken().getAccessToken() != null ){
             if(cartif.selecteditemIds().size()>0) {
+                showProgress(true);
 //initialize products call
                 final Call<Cart> cart_call;
                 ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, HomeActivity.app.tokenManager);
@@ -201,8 +207,16 @@ showProgress(false);
                         //check the validity of the response
                         if (response.isSuccessful()) {
                             mycart = response.body();
-
-
+                            showProgress(false);
+                            if(mycart.getCartitem().isEmpty()){
+                                cartactions.setVisibility(View.INVISIBLE);
+                                cartempty.setVisibility(View.VISIBLE);
+                                findViewById(R.id.cart_list).setVisibility(View.GONE);
+                            }else {
+                                cartactions.setVisibility(View.VISIBLE);
+                                findViewById(R.id.cart_list).setVisibility(View.VISIBLE);
+                                cartempty.setVisibility(View.GONE);
+                            }
                             int totalItems = 0;
                             for (Cartitem ci : mycart.getCartitem()) {
                                 totalItems += ci.getCount();
